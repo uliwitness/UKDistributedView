@@ -1,0 +1,436 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 42;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		3D1DA87D0A5EDAA7006918ED /* SampleAppIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D1DA87C0A5EDAA7006918ED /* SampleAppIcon.icns */; };
+		3D57872D0A5D3CE1003E5156 /* UKDistributedView_Prefix.h in Headers */ = {isa = PBXBuildFile; fileRef = 32CA4F630368D1EE00C91783 /* UKDistributedView_Prefix.h */; };
+		3D57872E0A5D3CE1003E5156 /* UKDistributedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D62299E04A8A09800B84C8B /* UKDistributedView.h */; };
+		3D57872F0A5D3CE1003E5156 /* MyDataSource.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DA805B204A90FDD00EF1C5A /* MyDataSource.h */; };
+		3D5787300A5D3CE1003E5156 /* MyDistViewItem.h in Headers */ = {isa = PBXBuildFile; fileRef = 3DA805B604A9130800EF1C5A /* MyDistViewItem.h */; };
+		3D5787310A5D3CE1003E5156 /* NSBezierPathCappedBoxes.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6EF17805B6E085007968B5 /* NSBezierPathCappedBoxes.h */; };
+		3D5787320A5D3CE1003E5156 /* UKFinderIconCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D6EF17A05B6E085007968B5 /* UKFinderIconCell.h */; };
+		3D5787340A5D3CE1003E5156 /* MainMenu.nib in Resources */ = {isa = PBXBuildFile; fileRef = 29B97318FDCFA39411CA2CEA /* MainMenu.nib */; };
+		3D5787350A5D3CE1003E5156 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 089C165CFE840E0CC02AAC07 /* InfoPlist.strings */; };
+		3D5787360A5D3CE1003E5156 /* MediDoc.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D35E78A04A953C40015C626 /* MediDoc.icns */; };
+		3D5787370A5D3CE1003E5156 /* LadyJayeIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D0B00DD04AB787200C474A3 /* LadyJayeIcon.icns */; };
+		3D5787380A5D3CE1003E5156 /* MimiRogersIcon.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D0B00E104AB79AE00C474A3 /* MimiRogersIcon.icns */; };
+		3D57873A0A5D3CE1003E5156 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = 29B97316FDCFA39411CA2CEA /* main.m */; settings = {ATTRIBUTES = (); }; };
+		3D57873B0A5D3CE1003E5156 /* UKDistributedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D62299F04A8A09800B84C8B /* UKDistributedView.m */; };
+		3D57873C0A5D3CE1003E5156 /* MyDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA805B304A90FDD00EF1C5A /* MyDataSource.m */; };
+		3D57873D0A5D3CE1003E5156 /* MyDistViewItem.m in Sources */ = {isa = PBXBuildFile; fileRef = 3DA805B704A9130800EF1C5A /* MyDistViewItem.m */; };
+		3D57873E0A5D3CE1003E5156 /* UKFinderIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6EF17705B6E085007968B5 /* UKFinderIconCell.m */; };
+		3D57873F0A5D3CE1003E5156 /* NSBezierPathCappedBoxes.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D6EF17905B6E085007968B5 /* NSBezierPathCappedBoxes.m */; };
+		3D5787410A5D3CE1003E5156 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */; };
+		3D57875B0A5D3D2A003E5156 /* NSImage+NiceScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 3D5787590A5D3D2A003E5156 /* NSImage+NiceScaling.m */; };
+		3D57875C0A5D3D2A003E5156 /* NSImage+NiceScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 3D57875A0A5D3D2A003E5156 /* NSImage+NiceScaling.h */; };
+		3D856A5D0A5E75D100C76A4B /* EighthDoctor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A560A5E75D100C76A4B /* EighthDoctor.icns */; };
+		3D856A5E0A5E75D100C76A4B /* FirstDoctor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A570A5E75D100C76A4B /* FirstDoctor.icns */; };
+		3D856A5F0A5E75D100C76A4B /* FourthDoctor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A580A5E75D100C76A4B /* FourthDoctor.icns */; };
+		3D856A600A5E75D100C76A4B /* K9.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A590A5E75D100C76A4B /* K9.icns */; };
+		3D856A610A5E75D100C76A4B /* Jabe.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A5A0A5E75D100C76A4B /* Jabe.icns */; };
+		3D856A620A5E75D100C76A4B /* SecondDoctor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A5B0A5E75D100C76A4B /* SecondDoctor.icns */; };
+		3D856A630A5E75D100C76A4B /* ThirdDoctor.icns in Resources */ = {isa = PBXBuildFile; fileRef = 3D856A5C0A5E75D100C76A4B /* ThirdDoctor.icns */; };
+/* End PBXBuildFile section */
+
+/* Begin PBXFileReference section */
+		089C165DFE840E0CC02AAC07 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
+		1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Cocoa.framework; path = /System/Library/Frameworks/Cocoa.framework; sourceTree = "<absolute>"; };
+		29B97316FDCFA39411CA2CEA /* main.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
+		29B97319FDCFA39411CA2CEA /* English */ = {isa = PBXFileReference; lastKnownFileType = wrapper.nib; name = English; path = English.lproj/MainMenu.nib; sourceTree = "<group>"; };
+		29B97324FDCFA39411CA2CEA /* AppKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = AppKit.framework; path = /System/Library/Frameworks/AppKit.framework; sourceTree = "<absolute>"; };
+		29B97325FDCFA39411CA2CEA /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = /System/Library/Frameworks/Foundation.framework; sourceTree = "<absolute>"; };
+		32CA4F630368D1EE00C91783 /* UKDistributedView_Prefix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UKDistributedView_Prefix.h; sourceTree = "<group>"; };
+		3D0B00DD04AB787200C474A3 /* LadyJayeIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = LadyJayeIcon.icns; sourceTree = "<group>"; };
+		3D0B00E104AB79AE00C474A3 /* MimiRogersIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MimiRogersIcon.icns; sourceTree = "<group>"; };
+		3D1DA87C0A5EDAA7006918ED /* SampleAppIcon.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SampleAppIcon.icns; sourceTree = "<group>"; };
+		3D35E78A04A953C40015C626 /* MediDoc.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = MediDoc.icns; sourceTree = "<group>"; };
+		3D5787460A5D3CE2003E5156 /* Info-UKDistributedView__Upgraded_.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "Info-UKDistributedView__Upgraded_.plist"; sourceTree = "<group>"; };
+		3D5787470A5D3CE2003E5156 /* UKDistributedView.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = UKDistributedView.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		3D5787590A5D3D2A003E5156 /* NSImage+NiceScaling.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = "NSImage+NiceScaling.m"; path = "../../UliKit/NSImage+NiceScaling.m"; sourceTree = "<group>"; };
+		3D57875A0A5D3D2A003E5156 /* NSImage+NiceScaling.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "NSImage+NiceScaling.h"; path = "../../UliKit/NSImage+NiceScaling.h"; sourceTree = "<group>"; };
+		3D5787C30A5D4085003E5156 /* TODO.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = TODO.txt; sourceTree = "<group>"; };
+		3D62299E04A8A09800B84C8B /* UKDistributedView.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; name = UKDistributedView.h; path = ../UKDistributedView.h; sourceTree = "<group>"; };
+		3D62299F04A8A09800B84C8B /* UKDistributedView.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; name = UKDistributedView.m; path = ../UKDistributedView.m; sourceTree = "<group>"; };
+		3D6EF17705B6E085007968B5 /* UKFinderIconCell.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = UKFinderIconCell.m; path = ../UKFinderIconCell/UKFinderIconCell.m; sourceTree = "<group>"; };
+		3D6EF17805B6E085007968B5 /* NSBezierPathCappedBoxes.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = NSBezierPathCappedBoxes.h; path = ../UKFinderIconCell/NSBezierPathCappedBoxes.h; sourceTree = "<group>"; };
+		3D6EF17905B6E085007968B5 /* NSBezierPathCappedBoxes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSBezierPathCappedBoxes.m; path = ../UKFinderIconCell/NSBezierPathCappedBoxes.m; sourceTree = "<group>"; };
+		3D6EF17A05B6E085007968B5 /* UKFinderIconCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UKFinderIconCell.h; path = ../UKFinderIconCell/UKFinderIconCell.h; sourceTree = "<group>"; };
+		3D856A560A5E75D100C76A4B /* EighthDoctor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = EighthDoctor.icns; sourceTree = "<group>"; };
+		3D856A570A5E75D100C76A4B /* FirstDoctor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FirstDoctor.icns; sourceTree = "<group>"; };
+		3D856A580A5E75D100C76A4B /* FourthDoctor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = FourthDoctor.icns; sourceTree = "<group>"; };
+		3D856A590A5E75D100C76A4B /* K9.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = K9.icns; sourceTree = "<group>"; };
+		3D856A5A0A5E75D100C76A4B /* Jabe.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = Jabe.icns; sourceTree = "<group>"; };
+		3D856A5B0A5E75D100C76A4B /* SecondDoctor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = SecondDoctor.icns; sourceTree = "<group>"; };
+		3D856A5C0A5E75D100C76A4B /* ThirdDoctor.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = ThirdDoctor.icns; sourceTree = "<group>"; };
+		3DA805B204A90FDD00EF1C5A /* MyDataSource.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDataSource.h; sourceTree = "<group>"; };
+		3DA805B304A90FDD00EF1C5A /* MyDataSource.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDataSource.m; sourceTree = "<group>"; };
+		3DA805B604A9130800EF1C5A /* MyDistViewItem.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = MyDistViewItem.h; sourceTree = "<group>"; };
+		3DA805B704A9130800EF1C5A /* MyDistViewItem.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = MyDistViewItem.m; sourceTree = "<group>"; };
+		3DEC0E4E05B9703F009BA67C /* README.rtf */ = {isa = PBXFileReference; lastKnownFileType = text.rtf; path = README.rtf; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		3D5787400A5D3CE1003E5156 /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D5787410A5D3CE1003E5156 /* Cocoa.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		080E96DDFE201D6D7F000001 /* Classes */ = {
+			isa = PBXGroup;
+			children = (
+				3DA805B204A90FDD00EF1C5A /* MyDataSource.h */,
+				3DA805B304A90FDD00EF1C5A /* MyDataSource.m */,
+				3DA805B604A9130800EF1C5A /* MyDistViewItem.h */,
+				3DA805B704A9130800EF1C5A /* MyDistViewItem.m */,
+				3D62299E04A8A09800B84C8B /* UKDistributedView.h */,
+				3D62299F04A8A09800B84C8B /* UKDistributedView.m */,
+				3D6EF18105B6E08E007968B5 /* UKFinderIconCell */,
+			);
+			name = Classes;
+			sourceTree = "<group>";
+		};
+		1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+			);
+			name = "Linked Frameworks";
+			sourceTree = "<group>";
+		};
+		1058C7A2FEA54F0111CA2CBB /* Other Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				29B97325FDCFA39411CA2CEA /* Foundation.framework */,
+				29B97324FDCFA39411CA2CEA /* AppKit.framework */,
+			);
+			name = "Other Frameworks";
+			sourceTree = "<group>";
+		};
+		19C28FACFE9D520D11CA2CBB /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				3D5787470A5D3CE2003E5156 /* UKDistributedView.app */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		29B97314FDCFA39411CA2CEA /* UKDistributedView */ = {
+			isa = PBXGroup;
+			children = (
+				3D5787C30A5D4085003E5156 /* TODO.txt */,
+				3DEC0E4E05B9703F009BA67C /* README.rtf */,
+				080E96DDFE201D6D7F000001 /* Classes */,
+				29B97315FDCFA39411CA2CEA /* Other Sources */,
+				29B97317FDCFA39411CA2CEA /* Resources */,
+				29B97323FDCFA39411CA2CEA /* Frameworks */,
+				19C28FACFE9D520D11CA2CBB /* Products */,
+				3D5787460A5D3CE2003E5156 /* Info-UKDistributedView__Upgraded_.plist */,
+			);
+			name = UKDistributedView;
+			sourceTree = "<group>";
+		};
+		29B97315FDCFA39411CA2CEA /* Other Sources */ = {
+			isa = PBXGroup;
+			children = (
+				3D57875A0A5D3D2A003E5156 /* NSImage+NiceScaling.h */,
+				3D5787590A5D3D2A003E5156 /* NSImage+NiceScaling.m */,
+				32CA4F630368D1EE00C91783 /* UKDistributedView_Prefix.h */,
+				29B97316FDCFA39411CA2CEA /* main.m */,
+			);
+			name = "Other Sources";
+			sourceTree = "<group>";
+		};
+		29B97317FDCFA39411CA2CEA /* Resources */ = {
+			isa = PBXGroup;
+			children = (
+				3D0B00E104AB79AE00C474A3 /* MimiRogersIcon.icns */,
+				3D0B00DD04AB787200C474A3 /* LadyJayeIcon.icns */,
+				3D35E78A04A953C40015C626 /* MediDoc.icns */,
+				3D856A560A5E75D100C76A4B /* EighthDoctor.icns */,
+				3D856A570A5E75D100C76A4B /* FirstDoctor.icns */,
+				3D856A580A5E75D100C76A4B /* FourthDoctor.icns */,
+				3D856A590A5E75D100C76A4B /* K9.icns */,
+				3D856A5A0A5E75D100C76A4B /* Jabe.icns */,
+				3D856A5B0A5E75D100C76A4B /* SecondDoctor.icns */,
+				3D856A5C0A5E75D100C76A4B /* ThirdDoctor.icns */,
+				3D1DA87C0A5EDAA7006918ED /* SampleAppIcon.icns */,
+				29B97318FDCFA39411CA2CEA /* MainMenu.nib */,
+				089C165CFE840E0CC02AAC07 /* InfoPlist.strings */,
+			);
+			name = Resources;
+			sourceTree = "<group>";
+		};
+		29B97323FDCFA39411CA2CEA /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				1058C7A0FEA54F0111CA2CBB /* Linked Frameworks */,
+				1058C7A2FEA54F0111CA2CBB /* Other Frameworks */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		3D6EF18105B6E08E007968B5 /* UKFinderIconCell */ = {
+			isa = PBXGroup;
+			children = (
+				3D6EF17A05B6E085007968B5 /* UKFinderIconCell.h */,
+				3D6EF17705B6E085007968B5 /* UKFinderIconCell.m */,
+				3D6EF17805B6E085007968B5 /* NSBezierPathCappedBoxes.h */,
+				3D6EF17905B6E085007968B5 /* NSBezierPathCappedBoxes.m */,
+			);
+			name = UKFinderIconCell;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		3D57872C0A5D3CE1003E5156 /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D57872D0A5D3CE1003E5156 /* UKDistributedView_Prefix.h in Headers */,
+				3D57872E0A5D3CE1003E5156 /* UKDistributedView.h in Headers */,
+				3D57872F0A5D3CE1003E5156 /* MyDataSource.h in Headers */,
+				3D5787300A5D3CE1003E5156 /* MyDistViewItem.h in Headers */,
+				3D5787310A5D3CE1003E5156 /* NSBezierPathCappedBoxes.h in Headers */,
+				3D5787320A5D3CE1003E5156 /* UKFinderIconCell.h in Headers */,
+				3D57875C0A5D3D2A003E5156 /* NSImage+NiceScaling.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		3D57872B0A5D3CE1003E5156 /* UKDistributedView (Upgraded) */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView (Upgraded)" */;
+			buildPhases = (
+				3D57872C0A5D3CE1003E5156 /* Headers */,
+				3D5787330A5D3CE1003E5156 /* Resources */,
+				3D5787390A5D3CE1003E5156 /* Sources */,
+				3D5787400A5D3CE1003E5156 /* Frameworks */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = "UKDistributedView (Upgraded)";
+			productInstallPath = "$(HOME)/Applications";
+			productName = UKDistributedView;
+			productReference = 3D5787470A5D3CE2003E5156 /* UKDistributedView.app */;
+			productType = "com.apple.product-type.application";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		29B97313FDCFA39411CA2CEA /* Project object */ = {
+			isa = PBXProject;
+			buildConfigurationList = 3D57874A0A5D3CE3003E5156 /* Build configuration list for PBXProject "UKDistributedView" */;
+			compatibilityVersion = "Xcode 2.4";
+			hasScannedForEncodings = 1;
+			mainGroup = 29B97314FDCFA39411CA2CEA /* UKDistributedView */;
+			projectDirPath = "";
+			projectRoot = ../..;
+			targets = (
+				3D57872B0A5D3CE1003E5156 /* UKDistributedView (Upgraded) */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		3D5787330A5D3CE1003E5156 /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D5787340A5D3CE1003E5156 /* MainMenu.nib in Resources */,
+				3D5787350A5D3CE1003E5156 /* InfoPlist.strings in Resources */,
+				3D5787360A5D3CE1003E5156 /* MediDoc.icns in Resources */,
+				3D5787370A5D3CE1003E5156 /* LadyJayeIcon.icns in Resources */,
+				3D5787380A5D3CE1003E5156 /* MimiRogersIcon.icns in Resources */,
+				3D856A5D0A5E75D100C76A4B /* EighthDoctor.icns in Resources */,
+				3D856A5E0A5E75D100C76A4B /* FirstDoctor.icns in Resources */,
+				3D856A5F0A5E75D100C76A4B /* FourthDoctor.icns in Resources */,
+				3D856A600A5E75D100C76A4B /* K9.icns in Resources */,
+				3D856A610A5E75D100C76A4B /* Jabe.icns in Resources */,
+				3D856A620A5E75D100C76A4B /* SecondDoctor.icns in Resources */,
+				3D856A630A5E75D100C76A4B /* ThirdDoctor.icns in Resources */,
+				3D1DA87D0A5EDAA7006918ED /* SampleAppIcon.icns in Resources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		3D5787390A5D3CE1003E5156 /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				3D57873A0A5D3CE1003E5156 /* main.m in Sources */,
+				3D57873B0A5D3CE1003E5156 /* UKDistributedView.m in Sources */,
+				3D57873C0A5D3CE1003E5156 /* MyDataSource.m in Sources */,
+				3D57873D0A5D3CE1003E5156 /* MyDistViewItem.m in Sources */,
+				3D57873E0A5D3CE1003E5156 /* UKFinderIconCell.m in Sources */,
+				3D57873F0A5D3CE1003E5156 /* NSBezierPathCappedBoxes.m in Sources */,
+				3D57875B0A5D3D2A003E5156 /* NSImage+NiceScaling.m in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXVariantGroup section */
+		089C165CFE840E0CC02AAC07 /* InfoPlist.strings */ = {
+			isa = PBXVariantGroup;
+			children = (
+				089C165DFE840E0CC02AAC07 /* English */,
+			);
+			name = InfoPlist.strings;
+			sourceTree = "<group>";
+		};
+		29B97318FDCFA39411CA2CEA /* MainMenu.nib */ = {
+			isa = PBXVariantGroup;
+			children = (
+				29B97319FDCFA39411CA2CEA /* English */,
+			);
+			name = MainMenu.nib;
+			sourceTree = "<group>";
+		};
+/* End PBXVariantGroup section */
+
+/* Begin XCBuildConfiguration section */
+		3D5787430A5D3CE1003E5156 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = NO;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_ENABLE_FIX_AND_CONTINUE = YES;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = UKDistributedView_Prefix.h;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-UKDistributedView__Upgraded_.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = UKDistributedView;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = YES;
+			};
+			name = Development;
+		};
+		3D5787440A5D3CE1003E5156 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				COPY_PHASE_STRIP = YES;
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_ENABLE_FIX_AND_CONTINUE = NO;
+				GCC_GENERATE_DEBUGGING_SYMBOLS = NO;
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = UKDistributedView_Prefix.h;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-UKDistributedView__Upgraded_.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = UKDistributedView;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+				ZERO_LINK = NO;
+			};
+			name = Deployment;
+		};
+		3D5787450A5D3CE1003E5156 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				FRAMEWORK_SEARCH_PATHS = "";
+				GCC_PRECOMPILE_PREFIX_HEADER = YES;
+				GCC_PREFIX_HEADER = UKDistributedView_Prefix.h;
+				GCC_SYMBOLS_PRIVATE_EXTERN = NO;
+				HEADER_SEARCH_PATHS = "";
+				INFOPLIST_FILE = "Info-UKDistributedView__Upgraded_.plist";
+				INSTALL_PATH = "$(HOME)/Applications";
+				LIBRARY_SEARCH_PATHS = "";
+				OTHER_CFLAGS = "";
+				OTHER_LDFLAGS = "";
+				PRODUCT_NAME = UKDistributedView;
+				SECTORDER_FLAGS = "";
+				WARNING_CFLAGS = (
+					"-Wmost",
+					"-Wno-four-char-constants",
+					"-Wno-unknown-pragmas",
+				);
+				WRAPPER_EXTENSION = app;
+			};
+			name = Default;
+		};
+		3D57874B0A5D3CE3003E5156 /* Development */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Development;
+		};
+		3D57874C0A5D3CE3003E5156 /* Deployment */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Deployment;
+		};
+		3D57874D0A5D3CE3003E5156 /* Default */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+			};
+			name = Default;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView (Upgraded)" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D5787430A5D3CE1003E5156 /* Development */,
+				3D5787440A5D3CE1003E5156 /* Deployment */,
+				3D5787450A5D3CE1003E5156 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+		3D57874A0A5D3CE3003E5156 /* Build configuration list for PBXProject "UKDistributedView" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				3D57874B0A5D3CE3003E5156 /* Development */,
+				3D57874C0A5D3CE3003E5156 /* Deployment */,
+				3D57874D0A5D3CE3003E5156 /* Default */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Default;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 29B97313FDCFA39411CA2CEA /* Project object */;
+}

@@ -1,0 +1,62 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {
+            ACTIONS = {
+                cellSizeChanged = id; 
+                contentInsetChanged = id; 
+                editCellPrototype = id; 
+                gridColorChanged = id; 
+                gridSizeChanged = id; 
+                optionsChanged = id; 
+            }; 
+            CLASS = UKDVIBPaletteInspector; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                cellHeightField = NSTextField; 
+                cellWidthField = NSTextField; 
+                contentInsetField = NSTextField; 
+                dragMovesItemsSwitch = NSButton; 
+                drawGridSwitch = NSButton; 
+                emptySelectionSwitch = NSButton; 
+                fitContentsSwitch = NSButton; 
+                forceToGridSwitch = NSButton; 
+                gridColorWell = NSColorWell; 
+                gridHeightField = NSTextField; 
+                gridWidthField = NSTextField; 
+                multipleSelectionSwitch = NSButton; 
+                selectionRectSwitch = NSButton; 
+                showSnapGuidesSwitch = NSButton; 
+                snapToGridSwitch = NSButton; 
+            }; 
+            SUPERCLASS = IBInspector; 
+        }, 
+        {
+            ACTIONS = {
+                cellClicked = id; 
+                deselectAll = id; 
+                positionAllItems = id; 
+                rescrollItems = id; 
+                selectAll = id; 
+                snapAllItemsToGrid = id; 
+                toggleDrawsGrid = id; 
+                toggleSnapToGrid = id; 
+            }; 
+            CLASS = UKDistributedView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                dataSource = id; 
+                delegate = id; 
+                prototype = NSCell; 
+                reserved1 = id; 
+                reserved2 = id; 
+                reserved3 = id; 
+                reserved4 = id; 
+            }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = UKFinderIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
+    ); 
+    IBVersion = 1; 
+}

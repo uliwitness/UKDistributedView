@@ -1,0 +1,42 @@
+{
+    IBClasses = (
+        {CLASS = FirstResponder; LANGUAGE = ObjC; SUPERCLASS = NSObject; }, 
+        {CLASS = NSObject; LANGUAGE = ObjC; }, 
+        {
+            CLASS = UKDVIBPalette; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                iconCellProxy = NSImageView; 
+                pureProxy = NSImageView; 
+                scrollableProxy = NSImageView; 
+            }; 
+            SUPERCLASS = IBPalette; 
+        }, 
+        {
+            ACTIONS = {
+                cellClicked = id; 
+                deselectAll = id; 
+                positionAllItems = id; 
+                rescrollItems = id; 
+                selectAll = id; 
+                snapAllItemsToGrid = id; 
+                toggleDrawsGrid = id; 
+                toggleSnapToGrid = id; 
+            }; 
+            CLASS = UKDistributedView; 
+            LANGUAGE = ObjC; 
+            OUTLETS = {
+                dataSource = id; 
+                delegate = id; 
+                prototype = NSCell; 
+                reserved1 = id; 
+                reserved2 = id; 
+                reserved3 = id; 
+                reserved4 = id; 
+            }; 
+            SUPERCLASS = NSView; 
+        }, 
+        {CLASS = UKFinderIconCell; LANGUAGE = ObjC; SUPERCLASS = NSTextFieldCell; }
+    ); 
+    IBVersion = 1; 
+}
