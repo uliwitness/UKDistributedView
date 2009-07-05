@@ -64,19 +64,19 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		gridSize.width = cellSize.width /2;
 		gridSize.height = cellSize.height /2;
 		contentInset = 8.0;
-		flags.forceToGrid = flags.snapToGrid = NO;
+		flags.bits.forceToGrid = flags.bits.snapToGrid = NO;
 		prototype = [[NSCell alloc] init];
 		mouseItem = -1;
 		dragDestItem = -1;
-		flags.dragMovesItems = NO;
+		flags.bits.dragMovesItems = NO;
 		delegate = dataSource = nil;
 		selectionSet = [[NSMutableSet alloc] init];
-		flags.useSelectionRect = flags.allowsMultipleSelection = flags.allowsEmptySelection = YES;
-		flags.sizeToFit = YES;
-		flags.showSnapGuides = YES;
-		runtimeFlags.drawSnappedRects = NO;
-		flags.drawsGrid = NO;
-		flags.drawsBackground = NO;
+		flags.bits.useSelectionRect = flags.bits.allowsMultipleSelection = flags.bits.allowsEmptySelection = YES;
+		flags.bits.sizeToFit = YES;
+		flags.bits.showSnapGuides = YES;
+		runtimeFlags.bits.drawSnappedRects = NO;
+		flags.bits.drawsGrid = NO;
+		flags.bits.drawsBackground = NO;
 		gridColor = [[NSColor gridColor] retain];
 		selectionRect = NSZeroRect;
 		visibleItemRect = NSZeroRect;
@@ -339,7 +339,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(IBAction)			deselectAll: (id)sender
 {
-	if( flags.allowsEmptySelection )
+	if( flags.bits.allowsEmptySelection )
 	{
 		[selectionSet removeAllObjects];
 		[self setNeedsDisplay:YES];
@@ -352,13 +352,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(IBAction)			toggleDrawsGrid: (id)sender
 {
-	[self setDrawsGrid: !flags.drawsGrid];
+	[self setDrawsGrid: !flags.bits.drawsGrid];
 }
 
 
 -(IBAction)			toggleSnapToGrid: (id)sender
 {
-	[self setSnapToGrid: !flags.snapToGrid];
+	[self setSnapToGrid: !flags.bits.snapToGrid];
 }
 
 
@@ -374,9 +374,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	// Edit menu commands:
 	if( [menuItem action] == @selector(selectAll:) )
-		return flags.allowsMultipleSelection;
+		return flags.bits.allowsMultipleSelection;
 	else if( [menuItem action] == @selector(deselectAll:) )
-		return( ([self selectedItemCount] > 0) && flags.allowsEmptySelection );
+		return( ([self selectedItemCount] > 0) && flags.bits.allowsEmptySelection );
 	// Grid, repositioning and other Finder-like behaviour:
 	else if( [menuItem action] == @selector(positionAllItems:) )
 		return [[self dataSource] respondsToSelector: @selector(distributedView:setPosition:forItemIndex:)];
@@ -384,12 +384,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		return [[self dataSource] respondsToSelector: @selector(distributedView:setPosition:forItemIndex:)];
 	else if( [menuItem action] == @selector(toggleDrawsGrid:) )
 	{
-		[menuItem setState: flags.drawsGrid];
+		[menuItem setState: flags.bits.drawsGrid];
 		return YES;
 	}
 	else if( [menuItem action] == @selector(toggleSnapToGrid:) )
 	{
-		[menuItem setState: flags.snapToGrid];
+		[menuItem setState: flags.bits.snapToGrid];
 		return YES;
 	}
 	else if( [menuItem action] == @selector(rescrollItems:) )	// Don't see why you'd want a menu item for this (besides debugging). You should really call this from your window zooming code.
@@ -414,7 +414,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 /* Set this to NO if you never want more than one item to be selected: */
 -(void)				setAllowsMultipleSelection: (BOOL)state
 {
-	flags.allowsMultipleSelection = state;
+	flags.bits.allowsMultipleSelection = state;
 	
 	if( !state && [selectionSet count] > 1 )
 	{
@@ -427,14 +427,14 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(BOOL)				allowsMultipleSelection
 {
-	return flags.allowsMultipleSelection;
+	return flags.bits.allowsMultipleSelection;
 }
 
 
 /* Set this to NO if you always want at least one item to be selected: */
 -(void)				setAllowsEmptySelection: (BOOL)state
 {
-	flags.allowsEmptySelection = state;
+	flags.bits.allowsEmptySelection = state;
 	
 	if( !state && [selectionSet count] == 0 )
 	{
@@ -446,7 +446,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(BOOL)				allowsEmptySelection
 {
-	return flags.allowsEmptySelection;
+	return flags.bits.allowsEmptySelection;
 }
 
 
@@ -455,19 +455,19 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     to YES: */
 -(void)				setUseSelectionRect: (BOOL)state
 {
-	flags.useSelectionRect = state;
+	flags.bits.useSelectionRect = state;
 	
 	// Selection rect implicitly turns on allowsMultipleSelection:
-	if( (!flags.allowsMultipleSelection) && state )
+	if( (!flags.bits.allowsMultipleSelection) && state )
 		[self setAllowsMultipleSelection:YES];
-	if( (!flags.allowsEmptySelection) && state )
+	if( (!flags.bits.allowsEmptySelection) && state )
 		[self setAllowsEmptySelection:YES];
 }
 
 
 -(BOOL)				useSelectionRect
 {
-	return flags.useSelectionRect && flags.allowsMultipleSelection && flags.allowsEmptySelection;
+	return flags.bits.useSelectionRect && flags.bits.allowsMultipleSelection && flags.bits.allowsEmptySelection;
 }
 
 
@@ -515,14 +515,14 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	that no items overlap. */
 -(void)	setForceToGrid: (BOOL)state
 {
-	flags.forceToGrid = state;
+	flags.bits.forceToGrid = state;
 	[self setNeedsDisplay: YES];
 }
 
 
 -(BOOL) forceToGrid
 {
-	return flags.forceToGrid;
+	return flags.bits.forceToGrid;
 }
 
 
@@ -530,13 +530,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     after NSTableView-ish behavior, you'll want this to be NO. */
 -(void)	setDragMovesItems: (BOOL)state
 {
-	flags.dragMovesItems = state;
+	flags.bits.dragMovesItems = state;
 }
 
 
 -(BOOL) dragMovesItems
 {
-	return flags.dragMovesItems;
+	return flags.bits.dragMovesItems;
 }
 
 
@@ -547,12 +547,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     the view's visible rectangle. */
 -(void)		setDragLocally: (BOOL)state
 {
-    flags.dragLocally = state;
+    flags.bits.dragLocally = state;
 }
 
 -(BOOL)		dragLocally
 {
-    return flags.dragLocally;
+    return flags.bits.dragLocally;
 }
 
 
@@ -560,13 +560,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 /* Whenever an object moves, make this view resize to fit. */ 
 -(void)	setSizeToFit: (BOOL)state
 {
-	flags.sizeToFit = state;
+	flags.bits.sizeToFit = state;
 }
 
 
 -(BOOL) sizeToFit
 {
-	return flags.sizeToFit;
+	return flags.bits.sizeToFit;
 }
 
 
@@ -593,51 +593,51 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
         [itemsBelowLastSuggested release];
         itemsBelowLastSuggested = nil;
     }
-	runtimeFlags.multiPositioningMode = state;
+	runtimeFlags.bits.multiPositioningMode = state;
 }
 
 
 -(BOOL) multiPositioningMode
 {
-	return runtimeFlags.multiPositioningMode;
+	return runtimeFlags.bits.multiPositioningMode;
 }
 
 
 /* Always force newly positioned and moved items to lie on the grid. */ 
 -(void)	setSnapToGrid: (BOOL)state
 {
-	flags.snapToGrid = state;
+	flags.bits.snapToGrid = state;
 }
 
 
 -(BOOL) snapToGrid
 {
-	return flags.snapToGrid;
+	return flags.bits.snapToGrid;
 }
 
 
 -(void)		setShowSnapGuides: (BOOL)state
 {
-	flags.showSnapGuides = state;
+	flags.bits.showSnapGuides = state;
 }
 
 
 -(BOOL)		showSnapGuides
 {
-	return flags.showSnapGuides;
+	return flags.bits.showSnapGuides;
 }
 
 
 -(void)		setDrawsGrid: (BOOL)state
 {
-	flags.drawsGrid = state;
+	flags.bits.drawsGrid = state;
 	[self setNeedsDisplay: YES];
 }
 
 
 -(BOOL)		drawsGrid
 {
-	return flags.drawsGrid;
+	return flags.bits.drawsGrid;
 }
 
 
@@ -645,7 +645,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(void)	setContentInset: (float)inset
 {
 	contentInset = inset;
-	if( flags.forceToGrid )
+	if( flags.bits.forceToGrid )
 		[self setNeedsDisplay: YES];
 }
 
@@ -662,7 +662,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	cellSize = size;
 	gridSize.width = cellSize.width /2;
 	gridSize.height = cellSize.height /2;
-	if( flags.forceToGrid )
+	if( flags.bits.forceToGrid )
 		[self setNeedsDisplay: YES];
 }
 
@@ -677,7 +677,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(void)	setGridSize: (NSSize)size
 {
 	gridSize = size;
-	if( flags.forceToGrid )
+	if( flags.bits.forceToGrid )
 		[self setNeedsDisplay: YES];
 }
 
@@ -714,13 +714,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)		setDrawsBackground: (BOOL)drawIt
 {
-	flags.drawsBackground = drawIt;
+	flags.bits.drawsBackground = drawIt;
 	[self setNeedsDisplay: YES];
 }
 
 -(BOOL)		drawsBackground
 {
-	return flags.drawsBackground;
+	return flags.bits.drawsBackground;
 }
 
 
@@ -831,10 +831,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	numRows = INT_MAX;
 	int		startRow = 0, startCol = 0;
 	
-	if( runtimeFlags.multiPositioningMode )
+	if( runtimeFlags.bits.multiPositioningMode )
 		startRow = lastSuggestedItemPos.y;
 	
-	if( runtimeFlags.multiPositioningMode )
+	if( runtimeFlags.bits.multiPositioningMode )
 		startCol = lastSuggestedItemPos.x;
 	
 	// Now loop over all slots in the window where we would put something:
@@ -886,10 +886,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	numCols = myFrame.size.width / gridSize.width;
 	numRows = myFrame.size.height / gridSize.height;
 
-	if( runtimeFlags.multiPositioningMode )
+	if( runtimeFlags.bits.multiPositioningMode )
 		startRow = lastSuggestedItemPos.y;
 	
-	if( runtimeFlags.multiPositioningMode )
+	if( runtimeFlags.bits.multiPositioningMode )
 		startCol = lastSuggestedItemPos.x;
 	
 	// Now loop over all slots in the window where we would put something:
@@ -903,7 +903,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			
 			if( [self getItemIndexForSuggestionInRect: testBox] == -1 )	// No item in this rect?
             {
-                if( runtimeFlags.multiPositioningMode && row > lastSuggestedItemPos.y )
+                if( runtimeFlags.bits.multiPositioningMode && row > lastSuggestedItemPos.y )
                     [self removeAllRowsFromSuggestionCacheBelow: testBox.origin.y];
                 
                 [itemsBelowLastSuggested addObject: [NSNumber numberWithInt: [[self dataSource]  numberOfItemsInDistributedView: self]]];
@@ -994,7 +994,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(NSRect)	snapRectToGrid: (NSRect)box
 {
-	if( flags.forceToGrid )
+	if( flags.bits.forceToGrid )
 		box = [self forceRectToGrid:box];
 	return box;
 }
@@ -1142,7 +1142,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 // Rect must be in flipped coordinates:
 -(int)	getItemIndexForSuggestionInRect: (NSRect)aBox
 {
-    if( !runtimeFlags.multiPositioningMode )
+    if( !runtimeFlags.bits.multiPositioningMode )
         return [self getUncachedItemIndexInRect: aBox];
     
     NSEnumerator*   enny = [itemsBelowLastSuggested objectEnumerator];
@@ -1326,7 +1326,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	drawGridForDrawRect: (NSRect)rect
 {
-	if( !flags.drawsGrid )
+	if( !flags.bits.drawsGrid )
 		return;
 
 	NSRect		box = [self frame];
@@ -1393,7 +1393,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		
 		isSelected |= (dragDestItem == x);
 		
-		if( runtimeFlags.drawSnappedRects && isSelected )
+		if( runtimeFlags.bits.drawSnappedRects && isSelected )
 		{
 			NSRect		indicatorBox = box;
 			indicatorBox = [self forceRectToGrid: box];
@@ -1476,10 +1476,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
         NSDrawGroove( [self bounds], rect );
         [@"UKDistributedView" drawAtPoint: NSMakePoint(8,20) withAttributes: [NSDictionary dictionary]];
     }
-    if( flags.drawsBackground )
+    if( flags.bits.drawsBackground )
 		[self drawBackgroundInRect: rect];
 	[self drawGridForDrawRect: rect];
-    if( runtimeFlags.drawDropHilite )
+    if( runtimeFlags.bits.drawDropHilite )
         [self drawDropHiliteForDrawRect: rect];
     if( [self dataSource] )
         [self drawCellsForDrawRect:rect];
@@ -1506,10 +1506,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	NSRect  ibox = [self rectForItemAtIndex: itemNb];
 	NSRect  box = [self flipRectsYAxis: ibox];
 	
-	if( !flags.forceToGrid )	// If item image can move freely, invalidate that rect.
+	if( !flags.bits.forceToGrid )	// If item image can move freely, invalidate that rect.
 		[self setNeedsDisplayInRect: box];
 	
-	if( runtimeFlags.drawSnappedRects || flags.forceToGrid )	// If we force to grid, only invalidate grid position. If we show "snap" rects, invalidate grid position in addition to free one so we see item and "snap" indicator fully.
+	if( runtimeFlags.bits.drawSnappedRects || flags.bits.forceToGrid )	// If we force to grid, only invalidate grid position. If we show "snap" rects, invalidate grid position in addition to free one so we see item and "snap" indicator fully.
 	{
 		NSRect		indicatorBox = [self forceRectToGrid: ibox];
 		indicatorBox = [self flipRectsYAxis: indicatorBox];
@@ -1724,7 +1724,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
         currBox.origin.y += imgPos.y;
         currBox = [self flipRectsYAxis: currBox];
         
-        if( flags.snapToGrid || flags.forceToGrid )
+        if( flags.bits.snapToGrid || flags.bits.forceToGrid )
             currBox = [self forceRectToGrid: currBox];
         
         [outPositions addObject: [NSValue valueWithPoint: currBox.origin]];
@@ -1804,7 +1804,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 						proposedItem: &dragDestItem];
     if( retVal != NSDragOperationNone )
     {
-        runtimeFlags.drawDropHilite = YES;
+        runtimeFlags.bits.drawDropHilite = YES;
         [self setNeedsDisplay: YES];
 	}
     
@@ -1854,7 +1854,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	dragDestItem = -1;
 	mouseItem = -1;
     
-    runtimeFlags.drawDropHilite = NO;
+    runtimeFlags.bits.drawDropHilite = NO;
     [self setNeedsDisplay: YES];
 }
 
@@ -1876,7 +1876,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	dragDestItem = -1;
 	mouseItem = -1;
     
-    runtimeFlags.drawDropHilite = NO;
+    runtimeFlags.bits.drawDropHilite = NO;
     [self invalidateVisibleItemsCache];
     [self setNeedsDisplay: YES];
 	
@@ -1939,7 +1939,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     
 	if( mouseItem == -1 )	// No item hit? Remove selection and start mouse tracking for selection rect.
 	{
-		if( !flags.allowsEmptySelection )	// Empty selection not allowed? Can't unselect, and since rubber band needs to reset the selection, can't do selection rect either.
+		if( !flags.bits.allowsEmptySelection )	// Empty selection not allowed? Can't unselect, and since rubber band needs to reset the selection, can't do selection rect either.
 			return;
 		[self selectionSetNeedsDisplay];    // Possible threading deadlock here ... ?
 		[selectionSet removeAllObjects];
@@ -1967,10 +1967,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			return;
 		}
 		
-		if( !flags.allowsMultipleSelection )
+		if( !flags.bits.allowsMultipleSelection )
 			[self deselectAll: nil];
 		
-		if( ([event modifierFlags] & NSShiftKeyMask) == NSShiftKeyMask && flags.allowsMultipleSelection )    // Single click but shift key held down?
+		if( ([event modifierFlags] & NSShiftKeyMask) == NSShiftKeyMask && flags.bits.allowsMultipleSelection )    // Single click but shift key held down?
 		{
 			// If shift key is down, toggle this item's selection status
 			if( [selectionSet containsObject:[NSNumber numberWithInt: mouseItem]] )
@@ -2070,20 +2070,20 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		// Select items in the rect:
 		[self selectItemsInRect:selectionRect byExtendingSelection:NO];
 	}
-	else if( flags.dragMovesItems && mouseItem != -1 )	// Item hit? Drag the item, if we're set up that way:
+	else if( flags.bits.dragMovesItems && mouseItem != -1 )	// Item hit? Drag the item, if we're set up that way:
 	{
 		BOOL	dataSourceDoesRemoteDrags = [[self dataSource] respondsToSelector: @selector(distributedView:writeItems:toPasteboard:)];
 		// If mouse is inside our rect, drag locally:
-		if( !dataSourceDoesRemoteDrags || (NSPointInRect( eventLocation, [self visibleRect] ) && flags.dragLocally) )
+		if( !dataSourceDoesRemoteDrags || (NSPointInRect( eventLocation, [self visibleRect] ) && flags.bits.dragLocally) )
 		{
 			NSEnumerator*		enummy = [selectionSet objectEnumerator];
 			NSNumber*			currentItemNum;
 		
-			if( ((([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.snapToGrid)		// snapToGrid is toggled using command key.
-					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.snapToGrid))
-					&& !flags.forceToGrid
-					&& flags.showSnapGuides )
-				runtimeFlags.drawSnappedRects = YES;
+			if( ((([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
+					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.bits.snapToGrid))
+					&& !flags.bits.forceToGrid
+					&& flags.bits.showSnapGuides )
+				runtimeFlags.bits.drawSnappedRects = YES;
 			
 			while( (currentItemNum = [enummy nextObject]) )
 			{
@@ -2136,19 +2136,19 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		box = [self snapRectToGrid: box];
 		box = [self flipRectsYAxis: box];
 	
-		if( NSPointInRect(eventLocation,box) && (((lastPos.x == eventLocation.x) && (lastPos.y == eventLocation.y)) || !flags.dragMovesItems) )	// Wasn't a drag.
+		if( NSPointInRect(eventLocation,box) && (((lastPos.x == eventLocation.x) && (lastPos.y == eventLocation.y)) || !flags.bits.dragMovesItems) )	// Wasn't a drag.
 		{
 			[self cellClicked:self];
 		}
 		lastPos = eventLocation;
 		mouseItem = -1;
 		
-		if( flags.dragMovesItems && (([event deltaX] != 0 || [event deltaY] != 0) || flags.snapToGrid) )	// Item hit? Drag the item, if we're set up that way:
+		if( flags.bits.dragMovesItems && (([event deltaX] != 0 || [event deltaY] != 0) || flags.bits.snapToGrid) )	// Item hit? Drag the item, if we're set up that way:
 		{
 			NSEnumerator*		enummy = [selectionSet objectEnumerator];
 			NSNumber*			currentItemNum;
 		
-			runtimeFlags.drawSnappedRects = NO;
+			runtimeFlags.bits.drawSnappedRects = NO;
 			
 			while( (currentItemNum = [enummy nextObject]) )
 			{
@@ -2162,9 +2162,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				ibox.origin.y += [event deltaY];
 				
 				// Apply grid to item, if necessary:
-				if( (([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.snapToGrid)		// snapToGrid is toggled using command key.
-					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.snapToGrid) 
-					|| flags.forceToGrid )
+				if( (([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
+					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.bits.snapToGrid) 
+					|| flags.bits.forceToGrid )
 				{
 					
 					ibox = [self forceRectToGrid: ibox];
@@ -2295,7 +2295,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	contentSizeChanged
 {
-	if( flags.sizeToFit )
+	if( flags.bits.sizeToFit )
 	{
 		NSRect newFrame = [self computeFrame];
 		
@@ -2472,7 +2472,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(void)viewDidMoveToSuperview
 {
 	// when this happens, we need to establish a base frame position/size
-	if( flags.sizeToFit )
+	if( flags.bits.sizeToFit )
 	{
 		[self setFrame:[self computeFrame]];
 	}

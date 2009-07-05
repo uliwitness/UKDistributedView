@@ -116,7 +116,7 @@ typedef union  UKDVPersistentFlags
         unsigned int        snapToGrid:1;               // Force moved and new cells' positions to the grid. This behaves like "snap to grid" in MacOS 9's Finder and actually changes cell positions, but doesn't move existing cells.
         unsigned int        forceToGrid:1;				// Force all cells' positions to the grid. This behaves like "keep arranged by name" in Finder, and doesn't change actual cell positions.
       #endif
-    };
+    } bits;
     int                 allFlags;
 } UKDVPersistentFlags;
 
@@ -138,7 +138,7 @@ typedef union  UKDVRuntimeFlags
         unsigned int        drawDropHilite:1;           // Draw highlight indicating we accept a drop around the edges of the view?
         unsigned int        drawSnappedRects:1;         // Draw "snap position" indicator behind selected items right now?
       #endif
-    };
+    } bits;
     int                 allFlags;
 } UKDVRuntimeFlags;
 

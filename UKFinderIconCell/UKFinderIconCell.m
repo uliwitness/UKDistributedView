@@ -45,7 +45,7 @@
 	self = [super initTextCell: txt];
 	if( self )
 	{
-		flags.selected = NO;
+		flags.bits.selected = NO;
 		image = [[NSImage imageNamed: @"NSApplicationIcon"] retain];
 		nameColor = [[NSColor controlBackgroundColor] retain];
 		boxColor = [[NSColor secondarySelectedControlColor] retain];
@@ -82,7 +82,7 @@
 {
     self = [super initWithCoder:decoder];
 	
-    flags.selected = NO;
+    flags.bits.selected = NO;
     truncateMode = NSLineBreakByTruncatingMiddle;
     
     if( [decoder allowsKeyedCoding] )
@@ -232,13 +232,13 @@
 
 -(void) setHighlighted: (BOOL)isSelected
 {
-	flags.selected = isSelected;
+	flags.bits.selected = isSelected;
 }
 
 
 -(BOOL)             isHighlighted
 {
-    return flags.selected;
+    return flags.bits.selected;
 }
 
 
@@ -250,7 +250,7 @@
 
 -(BOOL)             isFlipped
 {
-    return flags.flipped;
+    return flags.bits.flipped;
 }
 
 
@@ -261,13 +261,13 @@
 
 -(void) setDrawSeparator: (BOOL)isSelected
 {
-	flags.drawSeparator = isSelected;
+	flags.bits.drawSeparator = isSelected;
 }
 
 
 -(BOOL)     drawSeparator
 {
-    return flags.drawSeparator;
+    return flags.bits.drawSeparator;
 }
 
 
@@ -330,7 +330,7 @@
 	NSColor*			txBgColor = nil;
 	NSString*			displayTitle = [self title];
 	NSCellImagePosition imagePos = imagePosition;
-    flags.flipped = [aView isFlipped];
+    flags.bits.flipped = [aView isFlipped];
 	
 	NSImageRep*	rep = [[image representations] objectAtIndex: 0];
 	[image setSize: NSMakeSize( [rep pixelsWide], [rep pixelsHigh])];
@@ -350,7 +350,7 @@
         [bgColor set];
         [NSBezierPath fillRect: box];
     }
-    if( flags.drawSeparator )
+    if( flags.bits.drawSeparator )
     {
         [NSBezierPath setDefaultLineWidth: 2];
         [NSBezierPath setDefaultLineCapStyle: NSRoundLineCapStyle];
@@ -361,7 +361,7 @@
         [NSBezierPath setDefaultLineCapStyle: NSSquareLineCapStyle];
     }
     
-	if( flags.flipped )
+	if( flags.bits.flipped )
 	{
 		switch( imagePosition )
 		{
@@ -386,7 +386,7 @@
 	[NSBezierPath clipRect: box];   // Make sure we don't draw outside our cell.
 	
 	// Set up text attributes for title:
-	if( flags.selected )
+	if( flags.bits.selected )
 	{
 		attrs = [NSDictionary dictionaryWithObjectsAndKeys:
 						[self fontAtBestSize], NSFontAttributeName,
@@ -508,11 +508,11 @@
 	[[NSBezierPath bezierPathWithCappedBoxInRect: textBgBox] fill];   // draw text bg.
 	
 	// Draw actual text:
-	if( !flags.currentlyEditing )
+	if( !flags.bits.currentlyEditing )
 		[displayTitle drawInRect: textBox withAttributes: attrs];
 	
 	// If selected, draw image highlight rect:
-	if( flags.selected )
+	if( flags.bits.selected )
 	{
 		// Set up line for selection outline:
 		NSLineJoinStyle svLjs = [NSBezierPath defaultLineJoinStyle];
@@ -554,7 +554,7 @@
 		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationNone];
 	else
 		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
-    BOOL    drawUpsideDown = flags.flipped;
+    BOOL    drawUpsideDown = flags.bits.flipped;
     
     /*if( [aView isKindOfClass: [NSMatrix class]] )
         drawUpsideDown = !drawUpsideDown;*/
@@ -569,7 +569,7 @@
 	else
 		[image drawInRect: imgBox fromRect: imgRect operation: NSCompositeSourceOver fraction: alpha];
 
-	/*if( flags.flipped )
+	/*if( flags.bits.flipped )
 		[image compositeToPoint: NSMakePoint(imgBox.origin.x,imgBox.origin.y +actualSize.height) operation: NSCompositeSourceOver fraction: alpha];
 	else
 		[image compositeToPoint: imgBox.origin operation: NSCompositeSourceOver fraction: alpha];*/
@@ -741,10 +741,10 @@
 						nil];
 	NSSize			txSize = [[self title] sizeWithAttributes: attrs];
 	
-	flags.flipped = [aView isFlipped];
-    NSDivideRect (aRect, &textFrame, &imageFrame, (UKFIC_TEXT_VERTMARGIN *2) + txSize.height, flags.flipped ? NSMaxYEdge : NSMinYEdge);
+	flags.bits.flipped = [aView isFlipped];
+    NSDivideRect (aRect, &textFrame, &imageFrame, (UKFIC_TEXT_VERTMARGIN *2) + txSize.height, flags.bits.flipped ? NSMaxYEdge : NSMinYEdge);
 	
-    flags.currentlyEditing = YES;
+    flags.bits.currentlyEditing = YES;
 	[super editWithFrame: textFrame inView: aView editor:textObj delegate:anObject event: theEvent];
 }
 
@@ -759,7 +759,7 @@
 
 -(void) endEditing:(NSText *)textObj
 {
-    flags.currentlyEditing = NO;
+    flags.bits.currentlyEditing = NO;
     [super endEditing: textObj];
 }
 
@@ -786,10 +786,10 @@
 	
 	NSSize			txSize = [[self title] sizeWithAttributes: attrs];
 	
-	flags.flipped = [aView isFlipped];
-    NSDivideRect (aRect, &textFrame, &imageFrame, (UKFIC_TEXT_VERTMARGIN *2) + txSize.height, flags.flipped ? NSMaxYEdge : NSMinYEdge);
+	flags.bits.flipped = [aView isFlipped];
+    NSDivideRect (aRect, &textFrame, &imageFrame, (UKFIC_TEXT_VERTMARGIN *2) + txSize.height, flags.bits.flipped ? NSMaxYEdge : NSMinYEdge);
    
-    flags.currentlyEditing = YES;
+    flags.bits.currentlyEditing = YES;
 	[super selectWithFrame: textFrame inView: aView editor:textObj delegate:anObject start:selStart length:selLength];
 }
 
@@ -863,7 +863,7 @@
 	NSSize			txSize = [[self title] sizeWithAttributes: attrs];
 	
     NSDivideRect( aRect, &textFrame, &imageFrame, (UKFIC_TEXT_VERTMARGIN *2) + txSize.height,
-						flags.flipped ? NSMaxYEdge : NSMinYEdge);
+						flags.bits.flipped ? NSMaxYEdge : NSMinYEdge);
     
     return textFrame;
 }
@@ -891,7 +891,7 @@
 
 -(void)             setFlipped: (BOOL)a // Is reset every time you draw this into a view.
 {
-    flags.flipped = a;
+    flags.bits.flipped = a;
 }
 
 

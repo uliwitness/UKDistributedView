@@ -42,7 +42,7 @@ typedef union UKFICFlags
         unsigned int    currentlyEditing:1; // Currently being inline-edited?
         unsigned int    drawSeparator:1;    // Draw a separator line at the top of this cell?
         unsigned int    unusedFlags:28;
-    };
+    } bits;
     int     allFlags;
 } UKFICFlags;
 
