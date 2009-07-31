@@ -24,7 +24,6 @@
 /* Begin PBXBuildFile section */
 		13F8B89007B43554008AE28D /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD92D38A0106425D02CA0E72 /* Cocoa.framework */; };
 		546DEAF3067F632A0098DCC4 /* UKDistributedViewIBPlugin.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 53DF68FD067E5B5A0090B5B0 /* UKDistributedViewIBPlugin.framework */; };
-		54D33B2906778E3300C9C163 /* UKDistributedViewIBPluginView.classdescription in Resources */ = {isa = PBXBuildFile; fileRef = 54D33B2806778E3300C9C163 /* UKDistributedViewIBPluginView.classdescription */; };
 		55DE98C31000FADD00043298 /* UKDistributedView.h in Headers */ = {isa = PBXBuildFile; fileRef = 55DE98C11000FADD00043298 /* UKDistributedView.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		55DE98C41000FADD00043298 /* UKDistributedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98C21000FADD00043298 /* UKDistributedView.m */; };
 		55DE98C91000FAE600043298 /* UKFinderIconCell.h in Headers */ = {isa = PBXBuildFile; fileRef = 55DE98C51000FAE600043298 /* UKFinderIconCell.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -33,10 +32,19 @@
 		55DE98CC1000FAE600043298 /* NSBezierPathCappedBoxes.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98C81000FAE600043298 /* NSBezierPathCappedBoxes.m */; };
 		55DE98D31000FD3A00043298 /* NSImage+NiceScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98D11000FD3A00043298 /* NSImage+NiceScaling.m */; };
 		55DE98D41000FD3A00043298 /* NSImage+NiceScaling.h in Headers */ = {isa = PBXBuildFile; fileRef = 55DE98D21000FD3A00043298 /* NSImage+NiceScaling.h */; };
-		55DE98E31000FDC700043298 /* UKDistributedView.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98C21000FADD00043298 /* UKDistributedView.m */; };
-		55DE98E41000FDC700043298 /* UKFinderIconCell.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98C61000FAE600043298 /* UKFinderIconCell.m */; };
 		55DE98E51000FDC700043298 /* NSBezierPathCappedBoxes.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98C81000FAE600043298 /* NSBezierPathCappedBoxes.m */; };
 		55DE98E61000FDC700043298 /* NSImage+NiceScaling.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE98D11000FD3A00043298 /* NSImage+NiceScaling.m */; };
+		55DE9914100114FB00043298 /* UKDistributedView.classdescription in Resources */ = {isa = PBXBuildFile; fileRef = 55DE9913100114FB00043298 /* UKDistributedView.classdescription */; };
+		55DE99171001157600043298 /* UKFinderIconCell.classdescription in Resources */ = {isa = PBXBuildFile; fileRef = 55DE99161001157600043298 /* UKFinderIconCell.classdescription */; };
+		55DE996110011C7C00043298 /* UKDistributedViewDummyDataSource.m in Sources */ = {isa = PBXBuildFile; fileRef = 55DE995F10011C7C00043298 /* UKDistributedViewDummyDataSource.m */; };
+		55DE996A10011C8D00043298 /* sampleicon8.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996210011C8D00043298 /* sampleicon8.icns */; };
+		55DE996B10011C8D00043298 /* sampleicon6.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996310011C8D00043298 /* sampleicon6.icns */; };
+		55DE996C10011C8D00043298 /* sampleicon3.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996410011C8D00043298 /* sampleicon3.icns */; };
+		55DE996D10011C8D00043298 /* sampleicon1.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996510011C8D00043298 /* sampleicon1.icns */; };
+		55DE996E10011C8D00043298 /* sampleicon7.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996610011C8D00043298 /* sampleicon7.icns */; };
+		55DE996F10011C8D00043298 /* sampleicon5.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996710011C8D00043298 /* sampleicon5.icns */; };
+		55DE997010011C8D00043298 /* sampleicon2.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996810011C8D00043298 /* sampleicon2.icns */; };
+		55DE997110011C8D00043298 /* sampleicon4.icns in Resources */ = {isa = PBXBuildFile; fileRef = 55DE996910011C8D00043298 /* sampleicon4.icns */; };
 		8D1AC96C0486D14A00FE50C9 /* UKDistributedViewIBPluginInspector.m in Sources */ = {isa = PBXBuildFile; fileRef = 0259C577FE90428111CA0C5A /* UKDistributedViewIBPluginInspector.m */; settings = {ATTRIBUTES = (); }; };
 		8D1AC9700486D14A00FE50C9 /* Cocoa.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = DD92D38A0106425D02CA0E72 /* Cocoa.framework */; };
 		8D1AC9800486D23B00FE50C9 /* InfoPlist.strings in Resources */ = {isa = PBXBuildFile; fileRef = 8D1AC97F0486D23B00FE50C9 /* InfoPlist.strings */; };
@@ -82,7 +90,6 @@
 		32DBCF980370C29C00C91783 /* UKDistributedViewIBPlugin_Prefix.pch */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = UKDistributedViewIBPlugin_Prefix.pch; sourceTree = "<group>"; };
 		53DF68FD067E5B5A0090B5B0 /* UKDistributedViewIBPlugin.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = UKDistributedViewIBPlugin.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		53DF68FE067E5B5A0090B5B0 /* UKDistributedViewIBPlugin-Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = "UKDistributedViewIBPlugin-Info.plist"; sourceTree = "<group>"; };
-		54D33B2806778E3300C9C163 /* UKDistributedViewIBPluginView.classdescription */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = UKDistributedViewIBPluginView.classdescription; sourceTree = "<group>"; };
 		55DE98C11000FADD00043298 /* UKDistributedView.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UKDistributedView.h; path = ../UKDistributedView.h; sourceTree = SOURCE_ROOT; };
 		55DE98C21000FADD00043298 /* UKDistributedView.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = UKDistributedView.m; path = ../UKDistributedView.m; sourceTree = SOURCE_ROOT; };
 		55DE98C51000FAE600043298 /* UKFinderIconCell.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = UKFinderIconCell.h; path = ../UKFinderIconCell/UKFinderIconCell.h; sourceTree = SOURCE_ROOT; };
@@ -91,6 +98,18 @@
 		55DE98C81000FAE600043298 /* NSBezierPathCappedBoxes.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = NSBezierPathCappedBoxes.m; path = ../UKFinderIconCell/NSBezierPathCappedBoxes.m; sourceTree = SOURCE_ROOT; };
 		55DE98D11000FD3A00043298 /* NSImage+NiceScaling.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; name = "NSImage+NiceScaling.m"; path = "../../UliKit/NSImage+NiceScaling.m"; sourceTree = SOURCE_ROOT; };
 		55DE98D21000FD3A00043298 /* NSImage+NiceScaling.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; name = "NSImage+NiceScaling.h"; path = "../../UliKit/NSImage+NiceScaling.h"; sourceTree = SOURCE_ROOT; };
+		55DE9913100114FB00043298 /* UKDistributedView.classdescription */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = UKDistributedView.classdescription; sourceTree = "<group>"; };
+		55DE99161001157600043298 /* UKFinderIconCell.classdescription */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = text; path = UKFinderIconCell.classdescription; sourceTree = "<group>"; };
+		55DE995F10011C7C00043298 /* UKDistributedViewDummyDataSource.m */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.objc; path = UKDistributedViewDummyDataSource.m; sourceTree = "<group>"; };
+		55DE996010011C7C00043298 /* UKDistributedViewDummyDataSource.h */ = {isa = PBXFileReference; fileEncoding = 30; lastKnownFileType = sourcecode.c.h; path = UKDistributedViewDummyDataSource.h; sourceTree = "<group>"; };
+		55DE996210011C8D00043298 /* sampleicon8.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon8.icns; sourceTree = "<group>"; };
+		55DE996310011C8D00043298 /* sampleicon6.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon6.icns; sourceTree = "<group>"; };
+		55DE996410011C8D00043298 /* sampleicon3.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon3.icns; sourceTree = "<group>"; };
+		55DE996510011C8D00043298 /* sampleicon1.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon1.icns; sourceTree = "<group>"; };
+		55DE996610011C8D00043298 /* sampleicon7.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon7.icns; sourceTree = "<group>"; };
+		55DE996710011C8D00043298 /* sampleicon5.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon5.icns; sourceTree = "<group>"; };
+		55DE996810011C8D00043298 /* sampleicon2.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon2.icns; sourceTree = "<group>"; };
+		55DE996910011C8D00043298 /* sampleicon4.icns */ = {isa = PBXFileReference; lastKnownFileType = image.icns; path = sampleicon4.icns; sourceTree = "<group>"; };
 		8D1AC9730486D14A00FE50C9 /* Info.plist */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text.plist; path = Info.plist; sourceTree = "<group>"; };
 		8D1AC9740486D14A00FE50C9 /* UKDistributedViewIBPlugin.ibplugin */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = UKDistributedViewIBPlugin.ibplugin; sourceTree = BUILT_PRODUCTS_DIR; };
 		8D1AC97B0486D23100FE50C9 /* English */ = {isa = PBXFileReference; fileEncoding = 10; lastKnownFileType = text.plist.strings; name = English; path = English.lproj/InfoPlist.strings; sourceTree = "<group>"; };
@@ -150,6 +169,14 @@
 			children = (
 				D1AEDE460A6C289C0010C343 /* UKDistributedViewIBPluginLibrary.nib */,
 				C05B20D80A48CB530099B9E5 /* UKDistributedViewIBPluginInspector.xib */,
+				55DE996210011C8D00043298 /* sampleicon8.icns */,
+				55DE996310011C8D00043298 /* sampleicon6.icns */,
+				55DE996410011C8D00043298 /* sampleicon3.icns */,
+				55DE996510011C8D00043298 /* sampleicon1.icns */,
+				55DE996610011C8D00043298 /* sampleicon7.icns */,
+				55DE996710011C8D00043298 /* sampleicon5.icns */,
+				55DE996810011C8D00043298 /* sampleicon2.icns */,
+				55DE996910011C8D00043298 /* sampleicon4.icns */,
 			);
 			name = Resources;
 			sourceTree = "<group>";
@@ -214,7 +241,8 @@
 		54D33B2406778DD400C9C163 /* Class Descriptions */ = {
 			isa = PBXGroup;
 			children = (
-				54D33B2806778E3300C9C163 /* UKDistributedViewIBPluginView.classdescription */,
+				55DE9913100114FB00043298 /* UKDistributedView.classdescription */,
+				55DE99161001157600043298 /* UKFinderIconCell.classdescription */,
 			);
 			name = "Class Descriptions";
 			sourceTree = "<group>";
@@ -226,6 +254,8 @@
 				0259C576FE90428111CA0C5A /* UKDistributedViewIBPlugin.m */,
 				0259C57BFE90428111CA0C5A /* UKDistributedViewIBPluginInspector.h */,
 				0259C577FE90428111CA0C5A /* UKDistributedViewIBPluginInspector.m */,
+				55DE996010011C7C00043298 /* UKDistributedViewDummyDataSource.h */,
+				55DE995F10011C7C00043298 /* UKDistributedViewDummyDataSource.m */,
 			);
 			name = Classes;
 			sourceTree = "<group>";
@@ -339,9 +369,18 @@
 			buildActionMask = 2147483647;
 			files = (
 				8D1AC9800486D23B00FE50C9 /* InfoPlist.strings in Resources */,
-				54D33B2906778E3300C9C163 /* UKDistributedViewIBPluginView.classdescription in Resources */,
 				C0A47C500A523B730004BDC3 /* UKDistributedViewIBPluginInspector.xib in Resources */,
 				D1AEDE470A6C289C0010C343 /* UKDistributedViewIBPluginLibrary.nib in Resources */,
+				55DE9914100114FB00043298 /* UKDistributedView.classdescription in Resources */,
+				55DE99171001157600043298 /* UKFinderIconCell.classdescription in Resources */,
+				55DE996A10011C8D00043298 /* sampleicon8.icns in Resources */,
+				55DE996B10011C8D00043298 /* sampleicon6.icns in Resources */,
+				55DE996C10011C8D00043298 /* sampleicon3.icns in Resources */,
+				55DE996D10011C8D00043298 /* sampleicon1.icns in Resources */,
+				55DE996E10011C8D00043298 /* sampleicon7.icns in Resources */,
+				55DE996F10011C8D00043298 /* sampleicon5.icns in Resources */,
+				55DE997010011C8D00043298 /* sampleicon2.icns in Resources */,
+				55DE997110011C8D00043298 /* sampleicon4.icns in Resources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -366,10 +405,9 @@
 				C08787290A49DE9A00E9B151 /* UKDistributedViewIBPlugin.m in Sources */,
 				8D1AC96C0486D14A00FE50C9 /* UKDistributedViewIBPluginInspector.m in Sources */,
 				C044829F0C3328F4006E818F /* UKDistributedViewIBPluginViewIntegration.m in Sources */,
-				55DE98E31000FDC700043298 /* UKDistributedView.m in Sources */,
-				55DE98E41000FDC700043298 /* UKFinderIconCell.m in Sources */,
 				55DE98E51000FDC700043298 /* NSBezierPathCappedBoxes.m in Sources */,
 				55DE98E61000FDC700043298 /* NSImage+NiceScaling.m in Sources */,
+				55DE996110011C7C00043298 /* UKDistributedViewDummyDataSource.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
