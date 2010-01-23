@@ -42,8 +42,7 @@
 
 -(id)   initTextCell: (NSString*)txt
 {
-	self = [super initTextCell: txt];
-	if( self )
+	if(( self = [super initTextCell: txt] ))
 	{
 		flags.bits.selected = NO;
 		image = [[NSImage imageNamed: @"NSApplicationIcon"] retain];
@@ -61,11 +60,10 @@
 
 -(id)   initImageCell: (NSImage*)img
 {
-	self = [self initTextCell: @"UKDVUKDT"];
-	
-	if( self )
+	if(( self = [self initTextCell: @"UKDVUKDT"] ))
+	{
 		[self setImage: img];
-	
+	}
 	return self;
 }
 
@@ -80,43 +78,50 @@
 
 -(id)   initWithCoder:(NSCoder *)decoder
 {
-    self = [super initWithCoder:decoder];
-	
-    flags.bits.selected = NO;
-    truncateMode = NSLineBreakByTruncatingMiddle;
-    
-    if( [decoder allowsKeyedCoding] )
-    {
-        image = [[decoder decodeObjectForKey: @"UKFICimage"] retain];
-        nameColor = [[decoder decodeObjectForKey: @"UKFICnameColor"] retain];
-        boxColor = [[decoder decodeObjectForKey: @"UKFICboxColor"] retain];
-        selectionColor = [[decoder decodeObjectForKey: @"UKFICselectionColor"] retain];
-        bgColor = [[decoder decodeObjectForKey: @"UKFICbgColor"] retain];
-        imagePosition = [decoder decodeIntForKey: @"UKFICimagePosition"];
-        truncateMode = [decoder decodeIntForKey: @"UKFICtruncateMode"];
-        alpha = [decoder decodeFloatForKey: @"UKFICalpha"];
-    }
-    else
-    {
-        image = [[decoder decodeObject] retain];
-        nameColor = [[decoder decodeObject] retain];
-        boxColor = [[decoder decodeObject] retain];
-        selectionColor = [[decoder decodeObject] retain];
-        bgColor = [[decoder decodeObject] retain];
-        [decoder decodeValueOfObjCType:@encode(int) at: &imagePosition];
-        [decoder decodeValueOfObjCType:@encode(int) at: &truncateMode];
-        [decoder decodeValueOfObjCType:@encode(float) at: &alpha];
-    }
+    if(( self = [super initWithCoder: decoder] ))
+	{
+		// Set up a few defaults:
+		flags.bits.selected = NO;
+		imagePosition = NSImageAbove;
+        truncateMode = NSLineBreakByTruncatingMiddle;
+        alpha = 1.0;
+		
+		if( [decoder allowsKeyedCoding] )
+		{
+			image = [[decoder decodeObjectForKey: @"UKFICimage"] retain];
+			nameColor = [[decoder decodeObjectForKey: @"UKFICnameColor"] retain];
+			boxColor = [[decoder decodeObjectForKey: @"UKFICboxColor"] retain];
+			selectionColor = [[decoder decodeObjectForKey: @"UKFICselectionColor"] retain];
+			bgColor = [[decoder decodeObjectForKey: @"UKFICbgColor"] retain];
+			if( [decoder containsValueForKey: @"UKFICimagePosition"] )
+				imagePosition = [decoder decodeIntForKey: @"UKFICimagePosition"];
+			if( [decoder containsValueForKey: @"UKFICtruncateMode"] )
+				truncateMode = [decoder decodeIntForKey: @"UKFICtruncateMode"];
+			if( [decoder containsValueForKey: @"UKFICalpha"] )
+				alpha = [decoder decodeFloatForKey: @"UKFICalpha"];
+		}
+		else
+		{
+			image = [[decoder decodeObject] retain];
+			nameColor = [[decoder decodeObject] retain];
+			boxColor = [[decoder decodeObject] retain];
+			selectionColor = [[decoder decodeObject] retain];
+			bgColor = [[decoder decodeObject] retain];
+			[decoder decodeValueOfObjCType:@encode(int) at: &imagePosition];
+			[decoder decodeValueOfObjCType:@encode(int) at: &truncateMode];
+			[decoder decodeValueOfObjCType:@encode(float) at: &alpha];
+		}
 
-    if( !image )
-        image = [[NSImage imageNamed: @"NSApplicationIcon"] retain];
-    if( !nameColor )
-        nameColor = [[NSColor controlBackgroundColor] retain];
-    if( !boxColor )
-        boxColor = [[NSColor secondarySelectedControlColor] retain];
-    if( !selectionColor )
-        selectionColor = [[NSColor alternateSelectedControlColor] retain];
-    [self makeAlignmentConformImagePosition];
+		if( !image )
+			image = [[NSImage imageNamed: @"NSApplicationIcon"] retain];
+		if( !nameColor )
+			nameColor = [[NSColor controlBackgroundColor] retain];
+		if( !boxColor )
+			boxColor = [[NSColor secondarySelectedControlColor] retain];
+		if( !selectionColor )
+			selectionColor = [[NSColor alternateSelectedControlColor] retain];
+		[self makeAlignmentConformImagePosition];
+	}
     
     return self;
 }
@@ -230,13 +235,13 @@
 //  Mutator for cell selection state:
 // -----------------------------------------------------------------------------
 
--(void) setHighlighted: (BOOL)isSelected
+-(void)	setHighlighted: (BOOL)isSelected
 {
 	flags.bits.selected = isSelected;
 }
 
 
--(BOOL)             isHighlighted
+-(BOOL)	isHighlighted
 {
     return flags.bits.selected;
 }
@@ -248,7 +253,7 @@
 //      Mutator is in private methods.
 // -----------------------------------------------------------------------------
 
--(BOOL)             isFlipped
+-(BOOL)	isFlipped
 {
     return flags.bits.flipped;
 }
@@ -259,13 +264,13 @@
 //  Mutator for separator at top of cell:
 // -----------------------------------------------------------------------------
 
--(void) setDrawSeparator: (BOOL)isSelected
+-(void)	setDrawSeparator: (BOOL)isSelected
 {
 	flags.bits.drawSeparator = isSelected;
 }
 
 
--(BOOL)     drawSeparator
+-(BOOL)	drawSeparator
 {
     return flags.bits.drawSeparator;
 }
@@ -277,7 +282,7 @@
 }*/
 
 
--(void) highlight:(BOOL)flag withFrame:(NSRect)cellFrame inView:(NSView *)controlView
+-(void)	highlight:(BOOL)flag withFrame:(NSRect)cellFrame inView:(NSView *)controlView
 {
     [self setHighlighted: flag];
     if( controlView )
@@ -287,7 +292,7 @@
 }
 
 
--(float)    textSizeForBox: (NSRect)box
+-(float)	textSizeForBox: (NSRect)box
 {
     float   sz = 10;
     
@@ -309,7 +314,6 @@
             break;
     }
     
-    
     if( sz < 10 )
         return 10;
     else
@@ -321,7 +325,7 @@
 //  Draws everything you see of the cell:
 // -----------------------------------------------------------------------------
 
--(void) drawInteriorWithFrame:(NSRect)box inView:(NSView *)aView
+-(void)	drawInteriorWithFrame:(NSRect)box inView:(NSView *)aView
 {
 	NSRect				imgBox = box,
 						textBox = box,
@@ -493,8 +497,8 @@
 	
 	if( imagePos == NSImageLeft )
 	{
-		textBox.origin.x += imgBox.size.width +(UKFIC_TEXT_VERTMARGIN *3);
-		textBgBox.origin.x += imgBox.size.width +(UKFIC_TEXT_VERTMARGIN *3);
+		textBox.origin.x += imgBox.size.width +truncf(textBox.size.height /2) +(UKFIC_TEXT_VERTMARGIN *3);
+		textBgBox.origin.x += imgBox.size.width +truncf(textBox.size.height /2) +(UKFIC_TEXT_VERTMARGIN *3);
 	}
 	else if( imagePos == NSImageRight )
 	{
@@ -536,15 +540,10 @@
 	// Calculate box for icon:
 	NSSize		actualSize = [image size];
 	imgBox = NSInsetRect( imgBox, UKFIC_IMAGE_HORZMARGIN, UKFIC_IMAGE_VERTMARGIN );
-	
-	/*imgBox.origin.x += (imgBox.size.width -actualSize.width) /2;	// Center icon image in icon box.
-	imgBox.origin.y += (imgBox.size.height -actualSize.height) /2;*/
 
         // Make sure we're drawing on whole pixels, not between them:
     imgBox.origin.x = truncf(imgBox.origin.x);
     imgBox.origin.y = truncf(imgBox.origin.y);
-	//imgBox.size.width = actualSize.width;
-	//imgBox.size.height = actualSize.height;
     imgBox.size = [NSImage scaledSize: actualSize toFitSize: imgBox.size];
 
 	// Draw it!
@@ -554,20 +553,18 @@
 		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationNone];
 	else
 		[[NSGraphicsContext currentContext] setImageInterpolation: NSImageInterpolationHigh];
+	
     BOOL    drawUpsideDown = flags.bits.flipped;
-    
-    /*if( [aView isKindOfClass: [NSMatrix class]] )
-        drawUpsideDown = !drawUpsideDown;*/
-    
 	if( drawUpsideDown )
     {
-        imgBox.origin.y += imgBox.size.height;
-        if( [aView isKindOfClass: [NSMatrix class]] )
-            imgBox.size.height *= -1;
-		[image drawInRect: imgBox fromRect:imgRect operation: NSCompositeSourceOver fraction: alpha];
+		NSAffineTransform	*	trans = [NSAffineTransform transform];
+		[trans scaleXBy: 1.0 yBy: -1.0];
+		[trans translateXBy: 0 yBy: -imgBox.origin.y *2];
+		[trans concat];
+		imgBox.origin.y -= imgBox.size.height;
     }
-	else
-		[image drawInRect: imgBox fromRect: imgRect operation: NSCompositeSourceOver fraction: alpha];
+	
+	[image drawInRect: imgBox fromRect: imgRect operation: NSCompositeSourceOver fraction: alpha];
 
 	/*if( flags.bits.flipped )
 		[image compositeToPoint: NSMakePoint(imgBox.origin.x,imgBox.origin.y +actualSize.height) operation: NSCompositeSourceOver fraction: alpha];
