@@ -460,7 +460,6 @@
 			imgBox.size.height -= textBgBox.size.height;
 			break;
 		
-		// TODO: Sidewards titles are broken.
 		case NSImageLeft:
 			imgBox.size.width -= textBgBox.size.width;
 			break;
@@ -516,7 +515,7 @@
 		[displayTitle drawInRect: textBox withAttributes: attrs];
 	
 	// If selected, draw image highlight rect:
-	if( flags.bits.selected )
+	if( flags.bits.selected && boxColor )
 	{
 		// Set up line for selection outline:
 		NSLineJoinStyle svLjs = [NSBezierPath defaultLineJoinStyle];
