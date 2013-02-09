@@ -949,7 +949,7 @@ NSString*   UKStringByTruncatingStringWithAttributesForWidth( NSString* s, NSDic
         else if( (rangeToCut.length & 1) != 1 )     // even? NSLineBreakByTruncatingMiddle
             rangeToCut.location--;  // Move location left every other time, so it grows to right and left and stays centered.
         
-        if( rangeToCut.location < 0 || (rangeToCut.location +rangeToCut.length) > [s length] )
+        if( rangeToCut.location == NSNotFound || (rangeToCut.location +rangeToCut.length) > [s length] )
             return @"...";
 	}
 	
