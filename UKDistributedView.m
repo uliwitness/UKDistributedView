@@ -1,37 +1,29 @@
-/* =============================================================================
-	FILE:		UKDistributedView.m
-	PROJECT:	UKDistributedView
-
-	PURPOSE:	An NSTableView-like class that allows arbitrary positioning
-				of evenly-sized items. This is intended for things like the
-				Finder's "icon view", and even lets you snap items to a grid
-				in various ways, reorder them etc.
-				
-				Your data source must be able to provide a position for its
-				list items, which are simply enumerated. An NSCell subclass
-				can be used for actually displaying the data, e.g. as an
-				NSImage or similar.
-    
-    COPYRIGHT:  (c) 2003-2007 M. Uli Kusterer, all rights reserved.
-    
-	AUTHORS:	M. Uli Kusterer - UK
-    
-    LICENSES:   GPL or Commercial (see Readme)
-
-	REVISIONS:
-		2007-04-07	UK	Fixed a few more bugs when both no-multi-selection and
-						no-empty-selection were on.
-		2006-07-06	UK	Did some fixes to no-multi-selection-mode submitted by
-						Todd Ransom, fixed more bugs found along the way.
-        2004-12-01  UK  Ported over David Rozga's code. He caught some DnD bugs,
-                        provided default type-ahead code and more...
-        2004-11-20  UK  Added tool tips, item-caching callbacks, fixed title
-                        rect stuff, documented new type-ahead stuff etc.
-		2004-04-17  UK  Adapted David Sinclair's external code for allowing
-						inline editing. I should hand over maintenance to him...
-		2004-01-23  UK  Incorporated bug fixes from David Sinclair.
-		2003-06-24	UK	Created.
-   ========================================================================== */
+//
+//  UKDistributedView.m
+//  UKDistributedView
+//
+//  Created by Uli Kusterer on 2003-06-24.
+//  Copyright (c) 2003 M. Uli Kusterer. All rights reserved.
+//
+//	This software is provided 'as-is', without any express or implied
+//	warranty. In no event will the authors be held liable for any damages
+//	arising from the use of this software.
+//
+//	Permission is granted to anyone to use this software for any purpose,
+//	including commercial applications, and to alter it and redistribute it
+//	freely, subject to the following restrictions:
+//
+//	   1. The origin of this software must not be misrepresented; you must not
+//	   claim that you wrote the original software. If you use this software
+//	   in a product, an acknowledgment in the product documentation would be
+//	   appreciated but is not required.
+//
+//	   2. Altered source versions must be plainly marked as such, and must not be
+//	   misrepresented as being the original software.
+//
+//	   3. This notice may not be removed or altered from any source
+//	   distribution.
+//
 
 /* -----------------------------------------------------------------------------
 	Headers:

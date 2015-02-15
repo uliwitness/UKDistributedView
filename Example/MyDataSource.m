@@ -3,7 +3,26 @@
 //  UKDistributedView
 //
 //  Created by Uli Kusterer on Wed Jun 25 2003.
-//  Copyright (c) 2003-2007 M. Uli Kusterer. All rights reserved.
+//  Copyright (c) 2003 M. Uli Kusterer. All rights reserved.
+//
+//	This software is provided 'as-is', without any express or implied
+//	warranty. In no event will the authors be held liable for any damages
+//	arising from the use of this software.
+//
+//	Permission is granted to anyone to use this software for any purpose,
+//	including commercial applications, and to alter it and redistribute it
+//	freely, subject to the following restrictions:
+//
+//	   1. The origin of this software must not be misrepresented; you must not
+//	   claim that you wrote the original software. If you use this software
+//	   in a product, an acknowledgment in the product documentation would be
+//	   appreciated but is not required.
+//
+//	   2. Altered source versions must be plainly marked as such, and must not be
+//	   misrepresented as being the original software.
+//
+//	   3. This notice may not be removed or altered from any source
+//	   distribution.
 //
 
 #import "UKDistributedView.h"
@@ -67,17 +86,18 @@
 	static NSArray*	icons = nil;
 	if( !icons )
 	{
-		icons = [[NSArray arrayWithObjects: [NSImage imageNamed: @"LadyJayeIcon.icns"],
-											[NSImage imageNamed: @"MediDoc.icns"],
-											[NSImage imageNamed: @"MimiRogersIcon.icns"],
-											[NSImage imageNamed: @"FourthDoctor.icns"],
-											[NSImage imageNamed: @"ThirdDoctor.icns"],
-											[NSImage imageNamed: @"EighthDoctor.icns"],
-											[NSImage imageNamed: @"FirstDoctor.icns"],
-											[NSImage imageNamed: @"SecondDoctor.icns"],
-											[NSImage imageNamed: @"K9.icns"],
-											[NSImage imageNamed: @"Jabe.icns"],
-											[NSImage imageNamed: @"NSApplicationIcon"],
+		icons = [[NSArray arrayWithObjects: [NSImage imageNamed: @"HelpStack.png"],
+											[NSImage imageNamed: @"Juggler.png"],
+											[NSImage imageNamed: @"BeanieCopter.png"],
+											[NSImage imageNamed: @"ButtonIdeas.png"],
+											[NSImage imageNamed: @"ChartMaker.png"],
+											[NSImage imageNamed: @"FieldIdeas.png"],
+											[NSImage imageNamed: @"Letter.png"],
+											[NSImage imageNamed: @"LockedStack.png"],
+											[NSImage imageNamed: @"Puzzle.png"],
+											[NSImage imageNamed: @"Sort.png"],
+											[NSImage imageNamed: @"PhoneDirectory.png"],
+											[NSImage imageNamed: @"SearchStack.png"],
 											nil] retain];
 		srand( time(NULL) );
 	}

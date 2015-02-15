@@ -1,28 +1,41 @@
-/* =============================================================================
-	FILE:		UKDistributedView.h
-	PROJECT:	UKDistributedView
+//
+//  UKDistributedView.h
+//  UKDistributedView
+//
+//  Created by Uli Kusterer on 2003-06-24.
+//  Copyright (c) 2003 M. Uli Kusterer. All rights reserved.
+//
+//	This software is provided 'as-is', without any express or implied
+//	warranty. In no event will the authors be held liable for any damages
+//	arising from the use of this software.
+//
+//	Permission is granted to anyone to use this software for any purpose,
+//	including commercial applications, and to alter it and redistribute it
+//	freely, subject to the following restrictions:
+//
+//	   1. The origin of this software must not be misrepresented; you must not
+//	   claim that you wrote the original software. If you use this software
+//	   in a product, an acknowledgment in the product documentation would be
+//	   appreciated but is not required.
+//
+//	   2. Altered source versions must be plainly marked as such, and must not be
+//	   misrepresented as being the original software.
+//
+//	   3. This notice may not be removed or altered from any source
+//	   distribution.
+//
 
-	PURPOSE:	An NSTableView-like class that allows arbitrary positioning
-				of evenly-sized items. This is intended for things like the
-				Finder's "icon view", and even lets you snap items to a grid
-				in various ways, reorder them etc.
-				
-				Your data source must be able to provide a position for its
-				list items, which are simply enumerated. An NSCell subclass
-				can be used for actually displaying the data, e.g. as an
-				NSImage or similar.
-
-    COPYRIGHT:  (c) 2003-2007 M. Uli Kusterer, all rights reserved.
-    
-	AUTHORS:	M. Uli Kusterer - UK
-    
-    LICENSES:   GPL or Commercial (See Readme)
-
-	REVISIONS:
-        2005-02-22  UK  Moved multi-positioning-mode flag to runtime flags.
-                        Somehow it had ended up in the persistent flags struct.
-		2003-06-24  UK	Created.
-   ========================================================================== */
+/*
+	An NSTableView-like class that allows arbitrary positioning
+	of evenly-sized items. This is intended for things like the
+	Finder's "icon view", and even lets you snap items to a grid
+	in various ways, reorder them etc.
+	
+	Your data source must be able to provide a position for its
+	list items, which are simply enumerated. An NSCell subclass
+	can be used for actually displaying the data, e.g. as an
+	NSImage or similar.
+*/
 
 /* -----------------------------------------------------------------------------
 	Headers:
