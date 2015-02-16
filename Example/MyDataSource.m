@@ -31,6 +31,9 @@
 #import "MyDistViewItem.h"
 
 
+#define LAYER_BASED		0
+
+
 @implementation MyDataSource
 
 -(id)	init
@@ -161,6 +164,36 @@
 {
 	return [itemList count];	// Tell our list view how many items to expect:
 }
+
+
+#if LAYER_BASED
+-(NSPoint)	distributedView: (UKDistributedView*)distributedView positionAtItemIndex: (int)row
+{
+	MyDistViewItem*		item = [itemList objectAtIndex: row];
+	
+	/* Tell list view where to display this item:
+		You *must* keep track of your items' positions, and if you
+		want to be able to move them, you must also implement setPosition:forItemIndex: */
+	return [item position];
+}
+
+
+-(NSImage*)	distributedView: (UKDistributedView*)distributedView imageAtItemIndex: (int)row
+{
+	MyDistViewItem*		item = [itemList objectAtIndex: row];
+	
+	return [item image];
+}
+
+
+-(NSString*)	distributedView: (UKDistributedView*)distributedView titleAtItemIndex: (int)row
+{
+	MyDistViewItem*		item = [itemList objectAtIndex: row];
+	
+	return [item title];
+}
+#endif
+
 
 -(NSPoint)	distributedView: (UKDistributedView*)distributedView positionForCell:(NSCell*)cell atItemIndex: (int)row
 {

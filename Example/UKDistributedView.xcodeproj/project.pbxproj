@@ -37,6 +37,7 @@
 		551B36A61A90DBC3006AFDFE /* Juggler.png in Resources */ = {isa = PBXBuildFile; fileRef = 551B36A21A90DBC3006AFDFE /* Juggler.png */; };
 		551B36A71A90DBC3006AFDFE /* PhoneDirectory.png in Resources */ = {isa = PBXBuildFile; fileRef = 551B36A31A90DBC3006AFDFE /* PhoneDirectory.png */; };
 		551B36A81A90DBC3006AFDFE /* SearchStack.png in Resources */ = {isa = PBXBuildFile; fileRef = 551B36A41A90DBC3006AFDFE /* SearchStack.png */; };
+		551B36AA1A916989006AFDFE /* QuartzCore.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 551B36A91A916989006AFDFE /* QuartzCore.framework */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -74,6 +75,7 @@
 		551B36A21A90DBC3006AFDFE /* Juggler.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = Juggler.png; sourceTree = "<group>"; };
 		551B36A31A90DBC3006AFDFE /* PhoneDirectory.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = PhoneDirectory.png; sourceTree = "<group>"; };
 		551B36A41A90DBC3006AFDFE /* SearchStack.png */ = {isa = PBXFileReference; lastKnownFileType = image.png; path = SearchStack.png; sourceTree = "<group>"; };
+		551B36A91A916989006AFDFE /* QuartzCore.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = QuartzCore.framework; path = ../../../../../System/Library/Frameworks/QuartzCore.framework; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -81,6 +83,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				551B36AA1A916989006AFDFE /* QuartzCore.framework in Frameworks */,
 				3D5787410A5D3CE1003E5156 /* Cocoa.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -106,6 +109,7 @@
 			isa = PBXGroup;
 			children = (
 				1058C7A1FEA54F0111CA2CBB /* Cocoa.framework */,
+				551B36A91A916989006AFDFE /* QuartzCore.framework */,
 			);
 			name = "Linked Frameworks";
 			sourceTree = "<group>";
@@ -213,9 +217,9 @@
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		3D57872B0A5D3CE1003E5156 /* UKDistributedView (Upgraded) */ = {
+		3D57872B0A5D3CE1003E5156 /* UKDistributedView App */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView (Upgraded)" */;
+			buildConfigurationList = 3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView App" */;
 			buildPhases = (
 				3D57872C0A5D3CE1003E5156 /* Headers */,
 				3D5787330A5D3CE1003E5156 /* Resources */,
@@ -226,7 +230,7 @@
 			);
 			dependencies = (
 			);
-			name = "UKDistributedView (Upgraded)";
+			name = "UKDistributedView App";
 			productInstallPath = "$(HOME)/Applications";
 			productName = UKDistributedView;
 			productReference = 3D5787470A5D3CE2003E5156 /* UKDistributedView.app */;
@@ -250,7 +254,7 @@
 			projectDirPath = "";
 			projectRoot = ../..;
 			targets = (
-				3D57872B0A5D3CE1003E5156 /* UKDistributedView (Upgraded) */,
+				3D57872B0A5D3CE1003E5156 /* UKDistributedView App */,
 			);
 		};
 /* End PBXProject section */
@@ -420,7 +424,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView (Upgraded)" */ = {
+		3D5787420A5D3CE1003E5156 /* Build configuration list for PBXNativeTarget "UKDistributedView App" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				3D5787430A5D3CE1003E5156 /* Development */,

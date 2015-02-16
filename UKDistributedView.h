@@ -187,11 +187,6 @@ typedef union  UKDVRuntimeFlags
 	NSMutableString*    typeAheadSearchStr;         // String used for type-selection.
     NSTimeInterval      lastTypeAheadKeypress;      // Last time user typed ahead, so we know when to clear typeAheadSearchStr.
     int                 oldItemCount;               // Used to find out how many items to add/remove on numberOfItemsChanged.
-    
-	id					reserved1;					// Reserved for future use.
-	id					reserved2;					// Reserved for future use.
-	id					reserved3;					// Reserved for future use.
-	id					reserved4;					// Reserved for future use.
 }
 
 // Data source & delegate:
@@ -318,39 +313,46 @@ typedef union  UKDVRuntimeFlags
 -(NSImage*) dragImageForItems:(NSArray*)dragIndexes event:(NSEvent*)dragEvent
 				dragImageOffset:(NSPointPointer)dragImageOffset;
 
-// private:
--(NSRect)	snapRectToGrid: (NSRect)box;	// Calls forceRectToGrid if forceToGrid is true, otherwise returns the rect unmodified.
--(NSRect)	forceRectToGrid: (NSRect)box;
--(NSRect)	flipRectsYAxis: (NSRect)box;
--(void)		contentSizeChanged;
--(void)		drawGridForDrawRect: (NSRect)rect;
--(void)		drawCellsForDrawRect: (NSRect)rect;
--(void)		drawSelectionRectForDrawRect: (NSRect)rect;
--(void)     drawDropHiliteForDrawRect: (NSRect)rect;
--(void)		selectionSetNeedsDisplay;
-
--(void)		invalidateVisibleItemsCache;
--(void)		extendCacheByVisibleItemIndexesInRect: (NSRect)inBox startingAtIndex: (int)startIdx;   // Build cache of (potentially) visible items used for drawing and mouse tracking.
--(int)      getItemIndexForSuggestionInRect: (NSRect)aBox;  // Uses cache in multi-positioning mode, otherwise calls getUncachedItemIndexInRect:.
--(int)		getUncachedItemIndexInRect: (NSRect)aBox;
--(void)     removeAllRowsFromSuggestionCacheBelow: (float)yPos;
--(NSRect)   rectAroundItems: (NSArray*)dragIndexes;
-
--(void)             initiateDrag: (NSEvent*)event;
--(void)             initiateMove;
--(void)             addPositionsOfItems: (NSArray*)indexes toPasteboard: (NSPasteboard*)pboard;
--(NSMutableArray*)  positionsOfItemsOnPasteboard: (NSPasteboard*)pboard forImagePosition: (NSPoint)imgPos;
-
--(IBAction)	cellClicked: (id)sender;
-
--(NSRect)   computeFrame;
-
 @end
 
 
 /* -----------------------------------------------------------------------------
 	Data source protocol:
    -------------------------------------------------------------------------- */
+
+// If you want a layer-based view, implement this new protocol.
+//	for cell-based, implement the UKDistributedViewDataSource informal protocol below.
+@protocol ULIDistributedViewDataSource <NSObject>
+
+/* NOTE: Item positions are in "flipped" coordinates, i.e. the y-axis has
+		been reversed and starts at the top and increases down. That way,
+		items will not need to be repositioned when the view or window
+		are resized. */
+
+/* You *must* implement these to do anything useful: */
+-(int)			numberOfItemsInDistributedView: (UKDistributedView*)distributedView;
+
+-(NSPoint)		distributedView: (UKDistributedView*)distributedView
+						positionAtItemIndex: (int)row;
+
+-(NSImage*)		distributedView: (UKDistributedView*)distributedView
+						imageAtItemIndex: (int)row;
+
+-(NSString*)	distributedView: (UKDistributedView*)distributedView
+						titleAtItemIndex: (int)row;
+
+@optional
+
+// Implement this if you want the user to be able to reposition your items:
+-(void)			distributedView: (UKDistributedView*)distributedView
+						setPosition: (NSPoint)pos
+						forItemIndex: (int)row;
+
+// Implement this if you want tool tips for items in the view:
+-(NSString*)    distributedView: (UKDistributedView*)distributedView toolTipForItemAtIndex: (int)row;
+
+@end
+
 
 @interface NSObject (UKDistributedViewDataSource)
 
