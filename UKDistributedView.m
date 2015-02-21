@@ -1116,19 +1116,25 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		if( NSPointInRect( aPoint, box ) )
 		{
 			NSColor *colorAtPoint = nil;
-
-			// Lock focus on ourselves to perform some spot drawing:
-			[self lockFocus];
-				// First empty the pixels inside our box:
+			
+			// Draw the possibly clicked cell into an NSImage and find out which
+			//	pixel was clicked by the user:
+			NSImage*	hitTestImg = [[NSImage alloc] initWithSize: box.size];
+			[hitTestImg lockFocus];
+				// Make sure the image is transparent:
 				[[NSColor clearColor] set];
-				NSRectFillUsingOperation( box, NSCompositeClear );
-
+				NSRectFillUsingOperation( NSMakeRect(0,0,box.size.width,box.size.height), NSCompositeClear );
+				
+				// Fake the coordinate system the cell would have in real life:
+				NSAffineTransform*	at = [NSAffineTransform transform];
+				[at translateXBy: -box.origin.x yBy: -box.origin.y];
+				[at concat];
+			
 				// Next, draw our cell and grab the color at our mouse:
-				[prototype drawWithFrame:box inView:self];
+				[prototype drawWithFrame: box inView: self];
 				colorAtPoint = NSReadPixel(aPoint);
-			[self unlockFocus];
-
-			[self setNeedsDisplayInRect: box];  // Update or our temporary drawing screws up the looks.
+			[hitTestImg unlockFocus];
+			[hitTestImg release];
 			
 			/* Now if we've found a color, and if it's sufficiently
 				opaque, then call the hit a success: */
