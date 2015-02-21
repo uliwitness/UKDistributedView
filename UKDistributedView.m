@@ -3026,6 +3026,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			CALayer*	containerLayer = [CALayer layer];
 			containerLayer.frame = box;
 			containerLayer.masksToBounds = YES;
+			containerLayer.autoresizingMask = kCALayerMaxXMargin | kCALayerMinYMargin;
 //			if( isSelected )
 //			{
 //				containerLayer.borderWidth = 1;
