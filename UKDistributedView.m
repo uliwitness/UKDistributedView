@@ -99,7 +99,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		dragDestItem = -1;
 		flags.bits.dragMovesItems = NO;
 		delegate = dataSource = nil;
-		selectionSet = [[NSMutableSet alloc] init];
+		selectionSet = [[NSMutableIndexSet alloc] init];
 		flags.bits.useSelectionRect = flags.bits.allowsMultipleSelection = flags.bits.allowsEmptySelection = YES;
 		flags.bits.sizeToFit = YES;
 		flags.bits.showSnapGuides = YES;
@@ -167,7 +167,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     // Apply defaults, if needed:
     if( !prototype )
         prototype = [[NSCell alloc] init];
-    selectionSet = [[NSMutableSet set] retain];
+    selectionSet = [[NSMutableIndexSet alloc] init];
     if( !gridColor )
         gridColor = [[NSColor gridColor] retain];
     
@@ -229,22 +229,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	return [self selectedItemIndex];
 }
 
+
 -(int)	selectedItemIndex
 {
-	NSEnumerator*	enny = [selectionSet objectEnumerator];
-	int				i = -1;
-	NSNumber*		num;
-	
-	if( (num = [enny nextObject]) )
-		i = [num intValue];
-	
-	return i;
-}
-
-
--(NSEnumerator*)	selectedItemEnumerator
-{
-	return [selectionSet objectEnumerator];
+	if( selectionSet.count < 1 )
+		return -1;
+	return [selectionSet firstIndex];
 }
 
 
@@ -264,18 +254,18 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     if( !ext )
     {
         [self selectionSetNeedsDisplay];
-        [selectionSet removeAllObjects];
+        [selectionSet removeAllIndexes];
     }
 
-	if( index != -1 && ![selectionSet containsObject:[NSNumber numberWithInt: index]] )
-		[selectionSet addObject:[NSNumber numberWithInt: index]];
+	if( index != -1 && ![selectionSet containsIndex: index] )
+		[selectionSet addIndex: index];
 	
 	[self itemNeedsDisplay: index];
 }
 
 -(void)	deselectItem: (int)index {
 
-	[selectionSet removeObject: [NSNumber numberWithInt: index]];
+	[selectionSet removeIndex: index];
 	[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 			object: self];
 	[self itemNeedsDisplay: index];
@@ -291,7 +281,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	if( !ext )
 	{
 		[self selectionSetNeedsDisplay];	// Make sure items are redrawn unselected.
-		[selectionSet removeAllObjects];
+		[selectionSet removeAllIndexes];
 	}
 	
 	aBox = [self flipRectsYAxis: aBox];
@@ -303,8 +293,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 		if( NSIntersectsRect( aBox, box ) )
 		{
-			if( ![selectionSet containsObject:[NSNumber numberWithInt: x]] )
-				[selectionSet addObject:[NSNumber numberWithInt: x]];
+			if( ![selectionSet containsIndex: x] )
+				[selectionSet addIndex: x];
 			if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 				[delegate distributedView:self didSelectItemIndex: x];
 		}
@@ -330,15 +320,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)  updateSelectionSet
 {
-	NSEnumerator*		selEnny = [selectionSet objectEnumerator];
 	int					count = [[self dataSource] numberOfItemsInDistributedView:self];
-	NSNumber*			currIndex = nil;
 	
-	while( (currIndex = [selEnny nextObject]) )
-	{
-		if( [currIndex intValue] >= count )
-			[selectionSet removeObject: currIndex];
-	}
+	[selectionSet removeIndexesInRange: NSMakeRange(count, NSUIntegerMax -count)];
 }
 
 
@@ -351,13 +335,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	int		count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
-	[selectionSet removeAllObjects];
+	[selectionSet removeAllIndexes];
 	
 	while( --count >= 0 )
 	{
 		if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 			[delegate distributedView:self didSelectItemIndex: count];
-		[selectionSet addObject:[NSNumber numberWithInt: count]];
+		[selectionSet addIndexes: count];
 	}
 	
 	[self setNeedsDisplay:YES];
@@ -370,8 +354,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	if( flags.bits.allowsEmptySelection )
 	{
-		NSSet*	oldSelection = [[selectionSet copy] autorelease];
-		[selectionSet removeAllObjects];
+		NSIndexSet*	oldSelection = [[selectionSet copy] autorelease];
+		[selectionSet removeAllIndexes];
 		[self itemSetNeedsDisplay: oldSelection];
 	
 		[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
@@ -448,9 +432,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	if( !state && [selectionSet count] > 1 )
 	{
-		[self selectionSetNeedsDisplay];	// Make sure all unselected items are redrawn.
-		[selectionSet autorelease];
-		selectionSet = [[NSMutableSet setWithObject: [selectionSet anyObject]] retain];
+		NSIndexSet*	oldSel = [selectionSet autorelease];
+		selectionSet = [[NSMutableIndexSet alloc] initWithIndex: [oldSel firstIndex]];
+		[self itemSetNeedsDisplay: oldSel];
 	}
 }
 
@@ -468,7 +452,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	if( !state && [selectionSet count] == 0 )
 	{
-		[selectionSet addObject:[NSNumber numberWithInt: 0]];
+		[selectionSet addIndex: 0];
 		[self itemNeedsDisplay: 0];
 	}
 }
@@ -1435,7 +1419,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		box.origin = [[self dataSource] distributedView: self positionForCell:prototype atItemIndex: x];
 		box = [self snapRectToGrid: box];	// Does nothing if "force to grid" is off.
 		
-		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInt: x]];
+		BOOL		isSelected = [selectionSet containsIndex: x];
 		
 		isSelected |= (dragDestItem == x);
 		
@@ -1565,7 +1549,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			CATextLayer*	textLayer = [containerLayer.sublayers objectAtIndex: 1];
 			imageLayer.contents = [self.delegate distributedView: self imageAtItemIndex: itemNb];
 			textLayer.string = [self.delegate distributedView: self titleAtItemIndex: itemNb];
-			BOOL	isSelected = [selectionSet containsObject: [NSNumber numberWithInt: itemNb]];
+			BOOL	isSelected = [selectionSet containsIndex: itemNb];
 			textLayer.foregroundColor = (isSelected ? [NSColor alternateSelectedControlTextColor] : [NSColor blackColor]).CGColor;
 			textLayer.backgroundColor = (isSelected ? [NSColor alternateSelectedControlColor] : [NSColor whiteColor]).CGColor;
 		[CATransaction commit];
@@ -1591,13 +1575,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 }
 
 
--(void)	itemSetNeedsDisplay: (NSSet*)inSet
+-(void)	itemSetNeedsDisplay: (NSIndexSet*)inSet
 {
-	NSEnumerator*   enny = [inSet objectEnumerator];
-	NSNumber*		currIndex = nil;
-	
-	while( (currIndex = [enny nextObject]) )
-		[self itemNeedsDisplay: [currIndex intValue]];
+	for( NSInteger	currIndex = [inSet firstIndex]; currIndex != NSNotFound; currIndex = [inSet indexGreaterThanIndex: currIndex] )
+	{
+		[self itemNeedsDisplay: currIndex];
+	}
 }
 
 // Position is in flipped coordinates:
@@ -2008,7 +1991,6 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	mouseDown: (NSEvent*)event
 {
-	BOOL	layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 	lastPos = [event locationInWindow];
 	lastPos = [self convertPoint:lastPos fromView:nil];
     mouseItem = [self getItemIndexAtPoint: lastPos];
@@ -2019,8 +2001,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	{
 		if( !flags.bits.allowsEmptySelection )	// Empty selection not allowed? Can't unselect, and since rubber band needs to reset the selection, can't do selection rect either.
 			return;
-		NSSet*	oldSelection = [[selectionSet copy] autorelease];
-		[selectionSet removeAllObjects];
+		NSIndexSet*	oldSelection = [[selectionSet copy] autorelease];
+		[selectionSet removeAllIndexes];
 		[self itemSetNeedsDisplay: oldSelection];    // Possible threading deadlock here ... ?
 		[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 												object: self];
@@ -2065,7 +2047,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				if( ![delegate respondsToSelector: @selector(distributedView:shouldSelectItemIndex:)]
 					|| [delegate distributedView:self shouldSelectItemIndex: mouseItem] )
 				{
-					[selectionSet addObject:[NSNumber numberWithInt: mouseItem]];
+					[selectionSet addIndex: mouseItem];
 					if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 						[delegate distributedView:self didSelectItemIndex: mouseItem];
 					[self itemNeedsDisplay: mouseItem];
@@ -2081,12 +2063,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			if( ![delegate respondsToSelector: @selector(distributedView:shouldSelectItemIndex:)]
 				|| [delegate distributedView:self shouldSelectItemIndex: mouseItem] )
 			{
-				if( ![selectionSet containsObject:[NSNumber numberWithInt: mouseItem]] )
+				if( ![selectionSet containsIndex: mouseItem] )
 				{	
-					NSSet*	oldSelection = [[selectionSet copy] autorelease];
-					[selectionSet removeAllObjects];
+					NSIndexSet*	oldSelection = [[selectionSet copy] autorelease];
+					[selectionSet removeAllIndexes];
 					[self itemSetNeedsDisplay: oldSelection];    // Possible threading deadlock here ... ?
-					[selectionSet addObject:[NSNumber numberWithInt: mouseItem]];
+					[selectionSet addIndex: mouseItem];
 					if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 						[delegate distributedView:self didSelectItemIndex: mouseItem];
 					[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
@@ -2157,19 +2139,15 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		// If mouse is inside our rect, drag locally:
 		if( !dataSourceDoesRemoteDrags || (NSPointInRect( eventLocation, [self visibleRect] ) && flags.bits.dragLocally) )
 		{
-			NSEnumerator*		enummy = [selectionSet objectEnumerator];
-			NSNumber*			currentItemNum;
-		
 			if( ((([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
 					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.bits.snapToGrid))
 					&& !flags.bits.forceToGrid
 					&& flags.bits.showSnapGuides )
 				runtimeFlags.bits.drawSnappedRects = YES;
 			
-			while( (currentItemNum = [enummy nextObject]) )
+			for( NSInteger x = [selectionSet firstIndex]; x != NSNotFound; x = [selectionSet indexGreaterThanIndex: x] )
 			{
 				NSPoint		pos;
-				int			x = [currentItemNum intValue];
 				
 				if( layerBased )
 					pos = [[self dataSource] distributedView:self positionAtItemIndex: x];
@@ -2230,23 +2208,21 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		
 		if( flags.bits.dragMovesItems && (([event deltaX] != 0 || [event deltaY] != 0) || flags.bits.snapToGrid) )	// Item hit? Drag the item, if we're set up that way:
 		{
-			NSEnumerator*		enummy = [selectionSet objectEnumerator];
-			NSNumber*			currentItemNum;
 			BOOL				layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 		
 			runtimeFlags.bits.drawSnappedRects = NO;
 			
-			while( (currentItemNum = [enummy nextObject]) )
+			for( NSInteger x = [selectionSet firstIndex]; x != NSNotFound; x = [selectionSet indexGreaterThanIndex: x] )
 			{
 				NSRect		ibox;
 				
 				if( layerBased )
 				{
-					ibox.origin = [[self dataSource] distributedView:self positionAtItemIndex: [currentItemNum intValue]];
+					ibox.origin = [[self dataSource] distributedView:self positionAtItemIndex: x];
 				}
 				else
 				{
-					ibox.origin = [[self dataSource] distributedView:self positionForCell:nil atItemIndex: [currentItemNum intValue]];
+					ibox.origin = [[self dataSource] distributedView:self positionForCell:nil atItemIndex: x];
 					[self setNeedsDisplayInRect: [self flipRectsYAxis: ibox]];
 				}
 				
@@ -2261,12 +2237,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 					
 					ibox = [self forceRectToGrid: ibox];
 					if( !layerBased )
-						[self itemNeedsDisplay: [currentItemNum intValue]];
+						[self itemNeedsDisplay: x];
 				}
 				
-				[[self dataSource] distributedView:self setPosition:ibox.origin forItemIndex: [currentItemNum intValue]];
+				[[self dataSource] distributedView:self setPosition:ibox.origin forItemIndex: x];
 				if( !layerBased )
-					[self itemNeedsDisplay: [currentItemNum intValue]];
+					[self itemNeedsDisplay: x];
 			}
 		}
 	}
@@ -2340,8 +2316,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// of items has changed (but not to a different set)
 	
     int ic = [delegate numberOfItemsInDistributedView: self];
-	NSMutableSet* sel = selectionSet;
-    selectionSet = [[NSMutableSet alloc] init];
+	NSMutableIndexSet* sel = selectionSet;
+    selectionSet = [[NSMutableIndexSet alloc] init];
     if( ic > oldItemCount )
     {
         [self extendCacheByVisibleItemIndexesInRect: visibleItemRect startingAtIndex: oldItemCount];
@@ -3037,7 +3013,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		NSImage*	img = [[self dataSource] distributedView: self imageAtItemIndex: x];
 		NSString*	title = [[self dataSource] distributedView: self titleAtItemIndex: x];
 		
-		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInt: x]];
+		BOOL		isSelected = [selectionSet containsIndex: x];
 		
 		isSelected |= (dragDestItem == x);
 		

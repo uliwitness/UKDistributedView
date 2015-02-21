@@ -168,12 +168,12 @@ typedef union  UKDVRuntimeFlags
 	NSSize				gridSize;					// Size of grid to align items on. Usually, this is half our cell size.
 	float				contentInset;				// How many pixels of border to leave around the items.
 	IBOutlet NSCell*	prototype;					// The prototype cell used for our items.
-	NSMutableSet*		selectionSet;				// The selection. *not persistent*
+	NSMutableIndexSet*	selectionSet;				// The selection. *not persistent*
 	UKDVPersistentFlags flags;                      // Persistent flags and boolean properties.
     NSColor*			gridColor;					// Color to use for grid lines.
 
 // private: *do not use*
-	int					mouseItem;					// Item currently being tracked on a click.
+	NSInteger			mouseItem;					// Item currently being tracked on a click.
 	NSPoint				lastPos;					// Last mouse position during mouse tracking.
 	NSRect				selectionRect;				// Selection rect while we're tracking it.
 	UKDVRuntimeFlags    runtimeFlags;               // Flags used to temporarily change behavior at runtime.
