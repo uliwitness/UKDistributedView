@@ -370,8 +370,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	if( flags.bits.allowsEmptySelection )
 	{
+		NSSet*	oldSelection = [[selectionSet copy] autorelease];
 		[selectionSet removeAllObjects];
-		[self setNeedsDisplay:YES];
+		[self itemSetNeedsDisplay: oldSelection];
 	
 		[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 												object: self];
@@ -811,7 +812,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
     if( ![[self dataSource] respondsToSelector: @selector(distributedView:setPosition:forItemIndex:)] )
         return;
-    
+	BOOL			layerBased = [self.dataSource respondsToSelector: @selector(distributedView:titleAtItemIndex:)];
+	
 	int				x,
 					count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
@@ -820,7 +822,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	{
 		NSRect		testBox = [self rectForItemAtIndex:x];
 		testBox = [self forceRectToGrid:testBox];
+		
 		[[self dataSource] distributedView:self setPosition:testBox.origin forItemIndex:x];
+		if( layerBased )
+			[self itemNeedsDisplay: x];
 	}
 	
 	[[self window] invalidateCursorRectsForView:self];
@@ -1543,21 +1548,47 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	NSRect  ibox = [self rectForItemAtIndex: itemNb];
 	NSRect  box = [self flipRectsYAxis: ibox];
 	
-	if( !flags.bits.forceToGrid )	// If item image can move freely, invalidate that rect.
-		[self setNeedsDisplayInRect: box];
+	BOOL	layerBased = [self.delegate respondsToSelector: @selector(distributedView:imageAtItemIndex:)];
 	
-	if( runtimeFlags.bits.drawSnappedRects || flags.bits.forceToGrid )	// If we force to grid, only invalidate grid position. If we show "snap" rects, invalidate grid position in addition to free one so we see item and "snap" indicator fully.
+	if( layerBased )
 	{
-		NSRect		indicatorBox = [self forceRectToGrid: ibox];
-		indicatorBox = [self flipRectsYAxis: indicatorBox];
-		[self setNeedsDisplayInRect: indicatorBox];
+		[CATransaction begin];
+		[CATransaction setAnimationDuration: 0.0];
+			CALayer*	containerLayer = [self.layer.sublayers objectAtIndex: itemNb];
+			[containerLayer setFrame: box];
+			CALayer*		imageLayer = [containerLayer.sublayers objectAtIndex: 0];
+			CATextLayer*	textLayer = [containerLayer.sublayers objectAtIndex: 1];
+			imageLayer.contents = [self.delegate distributedView: self imageAtItemIndex: itemNb];
+			textLayer.string = [self.delegate distributedView: self titleAtItemIndex: itemNb];
+			BOOL	isSelected = [selectionSet containsObject: [NSNumber numberWithInt: itemNb]];
+			textLayer.foregroundColor = (isSelected ? [NSColor alternateSelectedControlTextColor] : [NSColor blackColor]).CGColor;
+			textLayer.backgroundColor = (isSelected ? [NSColor alternateSelectedControlColor] : [NSColor whiteColor]).CGColor;
+		[CATransaction commit];
+	}
+	else
+	{
+		if( !flags.bits.forceToGrid )	// If item image can move freely, invalidate that rect.
+			[self setNeedsDisplayInRect: box];
+		
+		if( runtimeFlags.bits.drawSnappedRects || flags.bits.forceToGrid )	// If we force to grid, only invalidate grid position. If we show "snap" rects, invalidate grid position in addition to free one so we see item and "snap" indicator fully.
+		{
+			NSRect		indicatorBox = [self forceRectToGrid: ibox];
+			indicatorBox = [self flipRectsYAxis: indicatorBox];
+			[self setNeedsDisplayInRect: indicatorBox];
+		}
 	}
 }
 
 
 -(void) selectionSetNeedsDisplay
 {
-	NSEnumerator*   enny = [selectionSet objectEnumerator];
+	[self itemSetNeedsDisplay: selectionSet];
+}
+
+
+-(void)	itemSetNeedsDisplay: (NSSet*)inSet
+{
+	NSEnumerator*   enny = [inSet objectEnumerator];
 	NSNumber*		currIndex = nil;
 	
 	while( (currIndex = [enny nextObject]) )
@@ -1972,6 +2003,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	mouseDown: (NSEvent*)event
 {
+	BOOL	layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 	lastPos = [event locationInWindow];
 	lastPos = [self convertPoint:lastPos fromView:nil];
     mouseItem = [self getItemIndexAtPoint: lastPos];
@@ -1982,8 +2014,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	{
 		if( !flags.bits.allowsEmptySelection )	// Empty selection not allowed? Can't unselect, and since rubber band needs to reset the selection, can't do selection rect either.
 			return;
-		[self selectionSetNeedsDisplay];    // Possible threading deadlock here ... ?
+		NSSet*	oldSelection = [[selectionSet copy] autorelease];
 		[selectionSet removeAllObjects];
+		[self itemSetNeedsDisplay: oldSelection];    // Possible threading deadlock here ... ?
 		[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 												object: self];
 	}
@@ -2045,8 +2078,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			{
 				if( ![selectionSet containsObject:[NSNumber numberWithInt: mouseItem]] )
 				{	
-					[self selectionSetNeedsDisplay];
+					NSSet*	oldSelection = [[selectionSet copy] autorelease];
 					[selectionSet removeAllObjects];
+					[self itemSetNeedsDisplay: oldSelection];    // Possible threading deadlock here ... ?
 					[selectionSet addObject:[NSNumber numberWithInt: mouseItem]];
 					if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 						[delegate distributedView:self didSelectItemIndex: mouseItem];
@@ -2081,6 +2115,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	mouseDragged:(NSEvent *)event
 {
+	BOOL				layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 	NSPoint				eventLocation = [event locationInWindow];
 	eventLocation = [self convertPoint:eventLocation fromView:nil];
 	
@@ -2114,7 +2149,6 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	else if( flags.bits.dragMovesItems && mouseItem != -1 )	// Item hit? Drag the item, if we're set up that way:
 	{
 		BOOL	dataSourceDoesRemoteDrags = [[self dataSource] respondsToSelector: @selector(distributedView:writeItems:toPasteboard:)];
-		BOOL	layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 		// If mouse is inside our rect, drag locally:
 		if( !dataSourceDoesRemoteDrags || (NSPointInRect( eventLocation, [self visibleRect] ) && flags.bits.dragLocally) )
 		{
@@ -2142,8 +2176,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				if( !layerBased )
 					[self itemNeedsDisplay: x]; // Invalidate old position.
 				[[self dataSource] distributedView:self setPosition:pos forItemIndex: x];
-				if( !layerBased )
-					[self itemNeedsDisplay: x]; // Invalidate new position.
+				[self itemNeedsDisplay: x]; // Invalidate new position/update layers to new position.
 			}
 			[[self window] invalidateCursorRectsForView:self];
 			
