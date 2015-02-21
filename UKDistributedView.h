@@ -173,7 +173,7 @@ typedef union  UKDVRuntimeFlags
     NSColor*			gridColor;					// Color to use for grid lines.
 
 // private: *do not use*
-	int					mouseItem;					// Item currently being tracked on a click.
+	NSUInteger			mouseItem;					// Item currently being tracked on a click.
 	NSPoint				lastPos;					// Last mouse position during mouse tracking.
 	NSRect				selectionRect;				// Selection rect while we're tracking it.
 	UKDVRuntimeFlags    runtimeFlags;               // Flags used to temporarily change behavior at runtime.
@@ -181,12 +181,12 @@ typedef union  UKDVRuntimeFlags
 	NSMutableArray*		itemsBelowLastSuggested;	// Cached indexes of the items that are below the lastSuggestedItemPos. These are the only ones we have to collision-detect.
 	NSRect				visibleItemRect;			// Rect in which we last cached the indexes of visible items.
 	NSMutableArray*		visibleItems;				// Cached indexes of the items that are visible in the visibleItemRect.
-	int					dragDestItem;				// Item being highlighted during drop.
+	NSUInteger			dragDestItem;				// Item being highlighted during drop.
 	NSPoint				dragStartImagePos;			// Position dragged image started out in.
-	int					editedItem;					// Item being edited using inline-editing. -1 if we're not editing.
+	NSUInteger			editedItem;					// Item being edited using inline-editing. NSNotFound if we're not editing.
 	NSMutableString*    typeAheadSearchStr;         // String used for type-selection.
     NSTimeInterval      lastTypeAheadKeypress;      // Last time user typed ahead, so we know when to clear typeAheadSearchStr.
-    int                 oldItemCount;               // Used to find out how many items to add/remove on numberOfItemsChanged.
+    NSUInteger			oldItemCount;               // Used to find out how many items to add/remove on numberOfItemsChanged.
 }
 
 // Data source & delegate:
@@ -206,14 +206,14 @@ typedef union  UKDVRuntimeFlags
 -(void)				setUseSelectionRect: (BOOL)state;		// Set to YES to get a "rubber-band" selection rectangle when empty areas are clicked.
 -(BOOL)				useSelectionRect;
 
--(int)				selectedItemCount;
+-(NSUInteger)		selectedItemCount;
 -(NSEnumerator*)	selectedItemEnumerator;
--(int)				selectedItemIndex;						// Use above calls if possible, your users will be grateful.
+-(NSUInteger)		selectedItemIndex;						// Use above calls if possible, your users will be grateful.
 #if UKDISTVIEW_BACKWARDS_COMPATIBLE
--(int)				selectedItem;							// Deprecated name. Use selectedItemIndex instead.
+-(NSUInteger)		selectedItem;							// Deprecated name. Use selectedItemIndex instead.
 #endif /*UKDISTVIEW_BACKWARDS_COMPATIBLE*/
 
--(void)				selectItem: (int)index byExtendingSelection: (BOOL)ext;
+-(void)				selectItem: (NSUInteger)index byExtendingSelection: (BOOL)ext;
 -(void)				selectItemsInRect: (NSRect)aBox byExtendingSelection: (BOOL)ext;
 -(void)             selectItemContainingString: (NSString*)str;
 -(IBAction)			selectAll: (id)sender;
@@ -273,24 +273,24 @@ typedef union  UKDVRuntimeFlags
 /* Determining/changing positions of items in this view:
 	Note that those of these for changing a position change the actual item positions, *permanently*. */
 -(NSPoint)	suggestedPosition;						// Get best position for a new item.
--(NSPoint)  itemPositionBasedOnItemIndex: (int)row; // Calculate a position based on its item number and the view's width. Use this to calculate item positions if you're implementing "keep arranged by..."-style views.
+-(NSPoint)  itemPositionBasedOnItemIndex: (NSUInteger)row; // Calculate a position based on its item number and the view's width. Use this to calculate item positions if you're implementing "keep arranged by..."-style views.
 
--(void)		positionItem: (int)itemIndex;			// Move an item from its current to the next best position (as in, unoccupied and on-grid).
+-(void)		positionItem: (NSUInteger)itemIndex;	// Move an item from its current to the next best position (as in, unoccupied and on-grid).
 -(void)		setMultiPositioningMode: (BOOL)state;   // Set this to YES to speed up groups of positionItem: calls
 -(BOOL)		multiPositioningMode;
 
 -(IBAction)	positionAllItems: (id)sender;			// Places all items on grid positions, starting at the top left in horizontal lines. They are put in their natural order, i.e. starting with 0 in the top left, 1 to its right etc.
 -(IBAction)	snapAllItemsToGrid: (id)sender;			// Places all items on the nearest grid positions. Does the same as "clean up" does in the Finder.
--(NSRect)	rectForItemAtIndex: (int)index;			// Returns a flipped rect.
+-(NSRect)	rectForItemAtIndex: (NSUInteger)index;	// Returns a flipped rect.
 
 // Drawing:
--(void)		itemNeedsDisplay: (int)itemNb;			// Cause redraw of an item (eventually calls setNeedsDisplayInRect: on this view).
--(BOOL)     itemIsVisible: (int)itemNb;
+-(void)		itemNeedsDisplay: (NSUInteger)itemNb;	// Cause redraw of an item (eventually calls setNeedsDisplayInRect: on this view).
+-(BOOL)     itemIsVisible: (NSUInteger)itemNb;
 -(BOOL)     itemIsVisibleAtPosition: (NSPoint)pos;  // Position has reversed Y-axis.
 
 // Hit-testing:
--(int)		getItemIndexAtPoint: (NSPoint)aPoint;
--(int)		getItemIndexInRect: (NSRect)aBox;		// aBox must have a reversed Y-axis. This checks for intersection of the two rects.
+-(NSUInteger)		getItemIndexAtPoint: (NSPoint)aPoint;
+-(NSUInteger)		getItemIndexInRect: (NSRect)aBox;		// aBox must have a reversed Y-axis. This checks for intersection of the two rects.
 
 // Goodies for zooming/sizing windows:
 -(IBAction)	rescrollItems: (id)sender;		// This is what Finder X never gets right. This moves all items so the leftmost one is at the left of the view and the topmost one at the top, removing any empty space above them, but not changing the items' relative positions.
@@ -300,10 +300,10 @@ typedef union  UKDVRuntimeFlags
 -(NSRect)   windowFrameForBestSize;         // Same as windowFrameSizeForBestSize, but returns a rect so the window's upper left corner doesn't move.
 
 // Inline editing:
--(void)		editItemIndex: (int)item withEvent:(NSEvent*)evt /*may be NIL*/ select:(BOOL)select;
+-(void)		editItemIndex: (NSUInteger)item withEvent:(NSEvent*)evt /*may be NIL*/ select:(BOOL)select;
 
 // Scrolling when embedded in an NSScrollView:
--(void)     scrollItemToVisible: (int)index;
+-(void)     scrollItemToVisible: (NSUInteger)index;
 -(void)     scrollToPoint: (NSPoint)p;
 -(void)     scrollByX: (float)dx y: (float)dy;
 
@@ -330,26 +330,26 @@ typedef union  UKDVRuntimeFlags
 		are resized. */
 
 /* You *must* implement these to do anything useful: */
--(int)			numberOfItemsInDistributedView: (UKDistributedView*)distributedView;
+-(NSUInteger)	numberOfItemsInDistributedView: (UKDistributedView*)distributedView;
 
 -(NSPoint)		distributedView: (UKDistributedView*)distributedView
-						positionAtItemIndex: (int)row;
+						positionAtItemIndex: (NSUInteger)row;
 
 -(NSImage*)		distributedView: (UKDistributedView*)distributedView
-						imageAtItemIndex: (int)row;
+						imageAtItemIndex: (NSUInteger)row;
 
 -(NSString*)	distributedView: (UKDistributedView*)distributedView
-						titleAtItemIndex: (int)row;
+						titleAtItemIndex: (NSUInteger)row;
 
 @optional
 
 // Implement this if you want the user to be able to reposition your items:
 -(void)			distributedView: (UKDistributedView*)distributedView
 						setPosition: (NSPoint)pos
-						forItemIndex: (int)row;
+						forItemIndex: (NSUInteger)row;
 
 // Implement this if you want tool tips for items in the view:
--(NSString*)    distributedView: (UKDistributedView*)distributedView toolTipForItemAtIndex: (int)row;
+-(NSString*)    distributedView: (UKDistributedView*)distributedView toolTipForItemAtIndex: (NSUInteger)row;
 
 @end
 
@@ -365,16 +365,16 @@ typedef union  UKDVRuntimeFlags
 	You are supposed to directly manipulate the cell passed to display your
 	data in it appropriately. Handy tip: Messages to nil objects are simply
 	ignored. */
--(int)			numberOfItemsInDistributedView: (UKDistributedView*)distributedView;
+-(NSUInteger)	numberOfItemsInDistributedView: (UKDistributedView*)distributedView;
 
 -(NSPoint)		distributedView: (UKDistributedView*)distributedView
 						positionForCell:(NSCell*)cell /* may be nil if the view only wants the item position. */
-						atItemIndex: (int)row;
+						atItemIndex: (NSUInteger)row;
 
 // Implement this if you want the user to be able to reposition your items:
 -(void)			distributedView: (UKDistributedView*)distributedView
 						setPosition: (NSPoint)pos
-						forItemIndex: (int)row;
+						forItemIndex: (NSUInteger)row;
 
 // Implement this if you want user to be able to edit cell titles:
 //  In addition, you will have to set your prototype cell's isEditable property
@@ -382,10 +382,10 @@ typedef union  UKDVRuntimeFlags
 //  in the course of preparing your cell.
 -(void)			distributedView: (UKDistributedView*)distributedView
 						setObjectValue: (id)val
-						forItemIndex: (int)row;
+						forItemIndex: (NSUInteger)row;
 
 // Implement this if you want tool tips for items in the view:
--(NSString*)    distributedView: (UKDistributedView*)distributedView toolTipForItemAtIndex: (int)row;
+-(NSString*)    distributedView: (UKDistributedView*)distributedView toolTipForItemAtIndex: (NSUInteger)row;
 
 @end
 
@@ -409,11 +409,11 @@ typedef union  UKDVRuntimeFlags
 
 // Specify where the dropped data should end up. On ("inside") an item, or just among them?
 -(NSDragOperation)  distributedView: (UKDistributedView*)dv validateDrop: (id <NSDraggingInfo>)info
-						proposedItem: (int*)row;	// Change "row", if you want. -1 means it's not on any item.
+						proposedItem: (NSUInteger*)row;	// Change "row", if you want. NSNotFound means it's not on any item.
 
 // Say whether you accept a drop of an item:
 -(BOOL)				distributedView: (UKDistributedView*)dv acceptDrop:(id <NSDraggingInfo>)info
-						onItem:(int)row;
+						onItem:(NSUInteger)row;
 
 // Use this to handle drops on the trash etc:
 -(void)				distributedView: (UKDistributedView*)dv dragEndedWithOperation: (NSDragOperation)operation;
@@ -428,14 +428,14 @@ typedef union  UKDVRuntimeFlags
 @interface NSObject (UKDistributedViewDelegate)
 
 // Called upon a mouseUp in a cell: (except if it was a drag)
--(void) distributedView: (UKDistributedView*)distributedView cellClickedAtItemIndex: (int)item;
+-(void) distributedView: (UKDistributedView*)distributedView cellClickedAtItemIndex: (NSUInteger)item;
 
 // Called on the second mouseDown of a double-click in a cell: (except if it was on the text area and the cell is editable)
--(void) distributedView: (UKDistributedView*)distributedView cellDoubleClickedAtItemIndex: (int)item;
+-(void) distributedView: (UKDistributedView*)distributedView cellDoubleClickedAtItemIndex: (NSUInteger)item;
 
 // Selection changes: (not sent for programmatic selection changes)
--(BOOL) distributedView: (UKDistributedView*)distributedView shouldSelectItemIndex: (int)item;
--(void) distributedView: (UKDistributedView*)distributedView didSelectItemIndex: (int)item;
+-(BOOL) distributedView: (UKDistributedView*)distributedView shouldSelectItemIndex: (NSUInteger)item;
+-(void) distributedView: (UKDistributedView*)distributedView didSelectItemIndex: (NSUInteger)item;
 
 // Return the item that matches a string:
 //  UKDV sends this for type-ahead with options being NSCaseInsensitiveSearch and NSAnchoredSearch
@@ -443,7 +443,7 @@ typedef union  UKDVRuntimeFlags
 //  when you call selectItemContainingString: with options NSCaseInsensitiveSearch.
 //	UKDV provides a default implementation of this that works if your items are
 //	ordered alphabetically already.
--(int)  distributedView: (UKDistributedView*)distributedView itemIndexForString: (NSString*)str options: (unsigned)opts;
+-(int)  distributedView: (UKDistributedView*)distributedView itemIndexForString: (NSString*)str options: (NSStringCompareOptions)opts;
 
 // For displaying progress info for large lists:
 -(void) distributedViewDidStartCachingItems: (UKDistributedView*)distributedView;

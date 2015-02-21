@@ -59,9 +59,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(void)		selectionSetNeedsDisplay;
 
 -(void)		invalidateVisibleItemsCache;
--(void)		extendCacheByVisibleItemIndexesInRect: (NSRect)inBox startingAtIndex: (int)startIdx;   // Build cache of (potentially) visible items used for drawing and mouse tracking.
--(int)      getItemIndexForSuggestionInRect: (NSRect)aBox;  // Uses cache in multi-positioning mode, otherwise calls getUncachedItemIndexInRect:.
--(int)		getUncachedItemIndexInRect: (NSRect)aBox;
+-(void)		extendCacheByVisibleItemIndexesInRect: (NSRect)inBox startingAtIndex: (NSUInteger)startIdx;   // Build cache of (potentially) visible items used for drawing and mouse tracking.
+-(NSUInteger)	getItemIndexForSuggestionInRect: (NSRect)aBox;  // Uses cache in multi-positioning mode, otherwise calls getUncachedItemIndexInRect:.
+-(NSUInteger)	getUncachedItemIndexInRect: (NSRect)aBox;
 -(void)     removeAllRowsFromSuggestionCacheBelow: (float)yPos;
 -(NSRect)   rectAroundItems: (NSArray*)dragIndexes;
 
@@ -95,8 +95,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		contentInset = 8.0;
 		flags.bits.forceToGrid = flags.bits.snapToGrid = NO;
 		prototype = [[NSCell alloc] init];
-		mouseItem = -1;
-		dragDestItem = -1;
+		mouseItem = NSNotFound;
+		dragDestItem = NSNotFound;
 		flags.bits.dragMovesItems = NO;
 		delegate = dataSource = nil;
 		selectionSet = [[NSMutableSet alloc] init];
@@ -110,7 +110,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		selectionRect = NSZeroRect;
 		visibleItemRect = NSZeroRect;
 		visibleItems = [[NSMutableArray alloc] init];
-		editedItem = -1;
+		editedItem = NSNotFound;
 	}
     return self;
 }
@@ -136,17 +136,17 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     self = [super initWithCoder:decoder];
 	
     lastPos = NSMakePoint(0,0);
-    mouseItem = -1;
-    dragDestItem = -1;
+    mouseItem = NSNotFound;
+    dragDestItem = NSNotFound;
     delegate = dataSource = nil;
     selectionRect = NSZeroRect;
     visibleItemRect = NSZeroRect;
     visibleItems = [[NSMutableArray alloc] init];
-    editedItem = -1;
+    editedItem = NSNotFound;
     
     if( [decoder allowsKeyedCoding] )
     {
-        unsigned len = sizeof(NSSize);
+        NSUInteger len = sizeof(NSSize);
         cellSize = *(NSSize*)[decoder decodeBytesForKey: @"UKDVcellSize" returnedLength: &len];
         gridSize = *(NSSize*)[decoder decodeBytesForKey: @"UKDVgridSize" returnedLength: &len];
         contentInset = [decoder decodeFloatForKey: @"UKDVcontentInset"];
@@ -224,19 +224,19 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 // -----------------------------------------------------------------------------
 #pragma mark Selection Management
 
--(int)	selectedItem
+-(NSUInteger)	selectedItem
 {
 	return [self selectedItemIndex];
 }
 
--(int)	selectedItemIndex
+-(NSUInteger)	selectedItemIndex
 {
 	NSEnumerator*	enny = [selectionSet objectEnumerator];
-	int				i = -1;
+	NSUInteger		i = NSNotFound;
 	NSNumber*		num;
 	
 	if( (num = [enny nextObject]) )
-		i = [num intValue];
+		i = [num unsignedIntegerValue];
 	
 	return i;
 }
@@ -248,15 +248,15 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 }
 
 
--(int)				selectedItemCount
+-(NSUInteger)		selectedItemCount
 {
 	return [selectionSet count];
 }
 
 
--(void)	selectItem: (int)index byExtendingSelection: (BOOL)ext
+-(void)	selectItem: (NSUInteger)index byExtendingSelection: (BOOL)ext
 {
-	NSParameterAssert( index >= 0 && index < [[self dataSource] numberOfItemsInDistributedView: self] );
+	NSParameterAssert( index != NSNotFound && index < [[self dataSource] numberOfItemsInDistributedView: self] );
     
 	if (![self allowsMultipleSelection])
 		ext = NO;
@@ -267,15 +267,15 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
         [selectionSet removeAllObjects];
     }
 
-	if( index != -1 && ![selectionSet containsObject:[NSNumber numberWithInt: index]] )
-		[selectionSet addObject:[NSNumber numberWithInt: index]];
+	if( index != NSNotFound && ![selectionSet containsObject:[NSNumber numberWithInteger: index]] )
+		[selectionSet addObject:[NSNumber numberWithInteger: index]];
 	
 	[self itemNeedsDisplay: index];
 }
 
--(void)	deselectItem: (int)index {
-
-	[selectionSet removeObject: [NSNumber numberWithInt: index]];
+-(void)	deselectItem: (NSUInteger)index
+{
+	[selectionSet removeObject: [NSNumber numberWithInteger: index]];
 	[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 			object: self];
 	[self itemNeedsDisplay: index];
@@ -286,7 +286,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	if (![self allowsMultipleSelection])
 		return;
 	
-	int		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSUInteger		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
 	if( !ext )
 	{
@@ -303,8 +303,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 		if( NSIntersectsRect( aBox, box ) )
 		{
-			if( ![selectionSet containsObject:[NSNumber numberWithInt: x]] )
-				[selectionSet addObject:[NSNumber numberWithInt: x]];
+			if( ![selectionSet containsObject:[NSNumber numberWithInteger: x]] )
+				[selectionSet addObject:[NSNumber numberWithInteger: x]];
 			if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 				[delegate distributedView:self didSelectItemIndex: x];
 		}
@@ -319,8 +319,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) selectItemContainingString: (NSString*)str
 {
-    int matchItem = [delegate distributedView:self itemIndexForString: str options: NSCaseInsensitiveSearch];
-    if( matchItem != -1 )
+    NSUInteger matchItem = [delegate distributedView:self itemIndexForString: str options: NSCaseInsensitiveSearch];
+    if( matchItem != NSNotFound )
     {
         [self selectItem: matchItem byExtendingSelection: NO];
         [self scrollItemToVisible: matchItem];
@@ -331,12 +331,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(void)  updateSelectionSet
 {
 	NSEnumerator*		selEnny = [selectionSet objectEnumerator];
-	int					count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSUInteger			count = [[self dataSource] numberOfItemsInDistributedView:self];
 	NSNumber*			currIndex = nil;
 	
 	while( (currIndex = [selEnny nextObject]) )
 	{
-		if( [currIndex intValue] >= count )
+		if( [currIndex unsignedIntegerValue] >= count )
 			[selectionSet removeObject: currIndex];
 	}
 }
@@ -349,15 +349,18 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(IBAction)			selectAll: (id)sender
 {
-	int		count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSUInteger		count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
 	[selectionSet removeAllObjects];
 	
-	while( --count >= 0 )
+	while( count > 0 )
 	{
 		if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 			[delegate distributedView:self didSelectItemIndex: count];
-		[selectionSet addObject:[NSNumber numberWithInt: count]];
+		[selectionSet addObject:[NSNumber numberWithInteger: count]];
+		
+		if( count == 0 )
+			break;
 	}
 	
 	[self setNeedsDisplay:YES];
@@ -468,7 +471,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	if( !state && [selectionSet count] == 0 )
 	{
-		[selectionSet addObject:[NSNumber numberWithInt: 0]];
+		[selectionSet addObject:[NSNumber numberWithInteger: 0]];
 		[self itemNeedsDisplay: 0];
 	}
 }
@@ -609,14 +612,14 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	if( state )
     {
 		lastSuggestedItemPos = NSMakePoint(0,0);
-        int count = [[self dataSource] numberOfItemsInDistributedView: self];
+        NSUInteger	count = [[self dataSource] numberOfItemsInDistributedView: self];
         
         [itemsBelowLastSuggested release];
         itemsBelowLastSuggested = [[NSMutableArray alloc] initWithCapacity: count];
         
-        int x;
+        NSUInteger x;
         for( x = 0; x < count; x++ )
-            [itemsBelowLastSuggested addObject: [NSNumber numberWithInt: x]];
+            [itemsBelowLastSuggested addObject: [NSNumber numberWithInteger: x]];
     }
     else
     {
@@ -769,7 +772,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     
 	BOOL			layerBased = [self.dataSource respondsToSelector: @selector(distributedView:titleAtItemIndex:)];
 	NSRect			myFrame = [self frame];
-	int				numCols,
+	NSUInteger		numCols,
 					x,
 					col = 0,
 					row = 0,
@@ -818,7 +821,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
         return;
 	BOOL			layerBased = [self.dataSource respondsToSelector: @selector(distributedView:titleAtItemIndex:)];
 	
-	int				x,
+	NSUInteger		x,
 					count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
 	// Now loop over all slots in the window where we would put something:
@@ -849,12 +852,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2004-12-02	UK	Added NSParameterAssert call.
    -------------------------------------------------------------------------- */
 
--(void)	positionItem: (int)itemIndex
+-(void)	positionItem: (NSUInteger)itemIndex
 {
-	NSParameterAssert( itemIndex >= 0 && itemIndex < [[self dataSource] numberOfItemsInDistributedView: self] );
+	NSParameterAssert( itemIndex != NSNotFound && itemIndex < [[self dataSource] numberOfItemsInDistributedView: self] );
     
 	NSRect			myFrame = [self frame];
-	int				numCols, numRows,
+	NSUInteger		numCols, numRows,
 					col, row;
 	
 	// Calculate display rect:
@@ -867,7 +870,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	numCols = myFrame.size.width / gridSize.width;
 	//numRows = myFrame.size.height / gridSize.height;
 	numRows = INT_MAX;
-	int		startRow = 0, startCol = 0;
+	NSUInteger		startRow = 0, startCol = 0;
 	
 	if( runtimeFlags.bits.multiPositioningMode )
 		startRow = lastSuggestedItemPos.y;
@@ -884,8 +887,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 												(row * cellSize.height) +contentInset,
 												cellSize.width, cellSize.height );
 			
-			int foundIndex = [self getUncachedItemIndexInRect:testBox];
-			if( foundIndex == -1 )	// No item in this rect?
+			NSUInteger foundIndex = [self getUncachedItemIndexInRect:testBox];
+			if( foundIndex == NSNotFound )	// No item in this rect?
 			{
 				[[self dataSource] distributedView:self setPosition:testBox.origin forItemIndex:itemIndex];
 				lastSuggestedItemPos.x = col;
@@ -911,7 +914,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 -(NSPoint)	suggestedPosition
 {
 	NSRect			myFrame = [self frame];
-	int				numCols, numRows,
+	NSUInteger		numCols, numRows,
 					col, row, startRow = 0, startCol = 0;
 	
 	// Calculate display rect:
@@ -939,12 +942,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 												(row * gridSize.height) +contentInset,
 												cellSize.width, cellSize.height );
 			
-			if( [self getItemIndexForSuggestionInRect: testBox] == -1 )	// No item in this rect?
+			if( [self getItemIndexForSuggestionInRect: testBox] == NSNotFound )	// No item in this rect?
             {
                 if( runtimeFlags.bits.multiPositioningMode && row > lastSuggestedItemPos.y )
                     [self removeAllRowsFromSuggestionCacheBelow: testBox.origin.y];
                 
-                [itemsBelowLastSuggested addObject: [NSNumber numberWithInt: [[self dataSource]  numberOfItemsInDistributedView: self]]];
+                [itemsBelowLastSuggested addObject: [NSNumber numberWithInteger: [[self dataSource]  numberOfItemsInDistributedView: self]]];
                 
                 lastSuggestedItemPos.x = col;
                 lastSuggestedItemPos.y = row;
@@ -970,10 +973,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2004-12-02	UK	Added NSParameterAssert call.
    -------------------------------------------------------------------------- */
 
--(NSPoint)  itemPositionBasedOnItemIndex: (int)row
+-(NSPoint)  itemPositionBasedOnItemIndex: (NSUInteger)row
 {
     NSPoint		pos = { 0, 0 };
-	int			numCols = truncf(([self frame].size.width -(contentInset *2)) / cellSize.width);
+	NSUInteger	numCols = truncf(([self frame].size.width -(contentInset *2)) / cellSize.width);
 	
     if( numCols < 1 )
 		numCols = 1;
@@ -1006,7 +1009,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// Find the lowest/highest X and Y coordinates and stuff them in l, t, r, and b:
 	while( (currIndex = [enny nextObject]) )
 	{
-		NSRect		currBox = [self rectForItemAtIndex: [currIndex intValue]];
+		NSRect		currBox = [self rectForItemAtIndex: [currIndex unsignedIntegerValue]];
 		
 		currBox = [self flipRectsYAxis: currBox];
 		
@@ -1090,7 +1093,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 
 // Point must be in regular (non-flipped) coordinates:
--(int)	getItemIndexAtPoint: (NSPoint)aPoint
+-(NSUInteger)	getItemIndexAtPoint: (NSPoint)aPoint
 {
 	NSEnumerator*   indexEnny = [visibleItems reverseObjectEnumerator]; // Opposite from drawing order, so we hit last drawn object (on top) first.
 	NSNumber*		currIndex = nil;
@@ -1098,7 +1101,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	while( (currIndex = [indexEnny nextObject]) )
 	{
-		int			x = [currIndex intValue];
+		NSUInteger	x = [currIndex unsignedIntegerValue];
 		NSRect		box;
 		
 		box.size = cellSize;
@@ -1134,19 +1137,19 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		}
 	}
 	
-	return -1;
+	return NSNotFound;
 }
 
 
 // Rect must be in flipped coordinates:
--(int)	getItemIndexInRect: (NSRect)aBox
+-(NSUInteger)	getItemIndexInRect: (NSRect)aBox
 {
 	NSEnumerator*   indexEnny = [visibleItems reverseObjectEnumerator];
 	NSNumber*		currIndex = nil;
 	
 	while( (currIndex = [indexEnny nextObject]) )
 	{
-		int			x = [currIndex intValue];
+		NSUInteger	x = [currIndex unsignedIntegerValue];
 		NSRect		box = [self rectForItemAtIndex:x];
 		
 		box = [self snapRectToGrid: box];
@@ -1159,14 +1162,14 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			return x;
 	}
 	
-	return -1;
+	return NSNotFound;
 }
 
 
 // Rect must be in flipped coordinates:
--(int)	getUncachedItemIndexInRect: (NSRect)aBox
+-(NSUInteger)	getUncachedItemIndexInRect: (NSRect)aBox
 {
-	int		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSUInteger		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
 	
 	for( x = 0; x < count; x++ )
 	{
@@ -1177,12 +1180,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			return x;
 	}
 	
-	return -1;
+	return NSNotFound;
 }
 
 
 // Rect must be in flipped coordinates:
--(int)	getItemIndexForSuggestionInRect: (NSRect)aBox
+-(NSUInteger)	getItemIndexForSuggestionInRect: (NSRect)aBox
 {
     if( !runtimeFlags.bits.multiPositioningMode )
         return [self getUncachedItemIndexInRect: aBox];
@@ -1192,26 +1195,26 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	while( (currIdx = [enny nextObject]) )
 	{
-		NSRect		box = [self rectForItemAtIndex: [currIdx intValue]];
+		NSRect		box = [self rectForItemAtIndex: [currIdx unsignedIntegerValue]];
 		box = [self snapRectToGrid: box];
 
 		if( NSIntersectsRect( aBox, box ) )
-			return [currIdx intValue];
+			return [currIdx unsignedIntegerValue];
 	}
 	
-	return -1;
+	return NSNotFound;
 }
 
 
 // yPos must be in flipped coordinates:
 -(void)	removeAllRowsFromSuggestionCacheBelow: (float)yPos
 {
-    int             count= [itemsBelowLastSuggested count];
-    int             x = 0;
+    NSUInteger		count= [itemsBelowLastSuggested count];
+    NSUInteger		x = 0;
 	
 	for( x = 0; x < count; x++ )
 	{
-		NSRect		box = [self rectForItemAtIndex: [[itemsBelowLastSuggested objectAtIndex: x] intValue]];
+		NSRect		box = [self rectForItemAtIndex: [[itemsBelowLastSuggested objectAtIndex: x] unsignedIntegerValue]];
 		box = [self snapRectToGrid: box];
 
 		if( box.origin.y +box.size.height < yPos )
@@ -1227,8 +1230,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	content inset: */
 -(NSRect)	bestRect
 {
-	int		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
-	NSRect	bestBox = [self frame];
+	NSUInteger		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSRect			bestBox = [self frame];
 	
 	bestBox.size.width = bestBox.size.height = 0;
 	
@@ -1251,11 +1254,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(NSSize)	bestSize
 {
-	int		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
-	float   minX = INT_MAX,
-			maxX = INT_MIN,
-			minY = INT_MAX,
-			maxY = INT_MIN;
+	NSUInteger		x, count = [[self dataSource] numberOfItemsInDistributedView: self];
+	float			minX = INT_MAX,
+					maxX = INT_MIN,
+					minY = INT_MAX,
+					maxY = INT_MIN;
 	
 	for( x = 0; x < count; x++ )
 	{
@@ -1351,7 +1354,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 
 // Rect is in flipped coordinates:
--(NSRect)	rectForItemAtIndex: (int)index
+-(NSRect)	rectForItemAtIndex: (NSUInteger)index
 {
 	NSParameterAssert( index >= 0 && index < [[self dataSource] numberOfItemsInDistributedView: self] );
     
@@ -1376,7 +1379,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		return;
 
 	NSRect		box = [self frame];
-	int			cols, rows, x, y;
+	NSUInteger	cols, rows, x, y;
 	
 	// Draw outline around margin:
 	box.origin.x += contentInset +0.5;		// 0.5 so it draws on a full pixel
@@ -1421,21 +1424,21 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// Now use the cache to draw all visible items:
 	NSEnumerator*   indexEnny = [visibleItems objectEnumerator];
 	NSNumber*		currIndex = nil;
-	int				icount = [[self dataSource] numberOfItemsInDistributedView: self];
+	NSUInteger		icount = [[self dataSource] numberOfItemsInDistributedView: self];
 	
 	//NSLog(@"count visible: %d",[visibleItems count]);
 	
 	while( (currIndex = [indexEnny nextObject]) )
 	{
 		NSRect		box = NSMakeRect( 0,0, cellSize.width,cellSize.height );
-		int			x = [currIndex intValue];
+		NSUInteger	x = [currIndex unsignedIntegerValue];
 		
 		if( x > icount )
 			continue;
 		box.origin = [[self dataSource] distributedView: self positionForCell:prototype atItemIndex: x];
 		box = [self snapRectToGrid: box];	// Does nothing if "force to grid" is off.
 		
-		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInt: x]];
+		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInteger: x]];
 		
 		isSelected |= (dragDestItem == x);
 		
@@ -1471,7 +1474,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	[snapGuideImg lockFocus];
 		[prototype drawWithFrame: drawBox inView: self];
 	[snapGuideImg unlockFocus];
-	[snapGuideImg dissolveToPoint: box.origin fraction: 0.2];
+	[snapGuideImg drawAtPoint: box.origin fromRect: NSZeroRect operation: NSCompositeSourceAtop fraction: 0.2];
   #else
 	box = NSInsetRect( box, 2, 2 );
 	box.origin.x += 0.5; box.origin.y += 0.5;	// Move them onto full pixels.
@@ -1539,13 +1542,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 }
 
 
--(BOOL)     itemIsVisible: (int)itemNb
+-(BOOL)     itemIsVisible: (NSUInteger)itemNb
 {
-	return [visibleItems containsObject: [NSNumber numberWithInt: itemNb]];
+	return [visibleItems containsObject: [NSNumber numberWithInteger: itemNb]];
 }
 
 
--(void) itemNeedsDisplay: (int)itemNb
+-(void) itemNeedsDisplay: (NSUInteger)itemNb
 {
 	NSParameterAssert( itemNb >= 0 && itemNb < [[self dataSource] numberOfItemsInDistributedView: self] );
     
@@ -1565,7 +1568,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			CATextLayer*	textLayer = [containerLayer.sublayers objectAtIndex: 1];
 			imageLayer.contents = [self.delegate distributedView: self imageAtItemIndex: itemNb];
 			textLayer.string = [self.delegate distributedView: self titleAtItemIndex: itemNb];
-			BOOL	isSelected = [selectionSet containsObject: [NSNumber numberWithInt: itemNb]];
+			BOOL	isSelected = [selectionSet containsObject: [NSNumber numberWithInteger: itemNb]];
 			textLayer.foregroundColor = (isSelected ? [NSColor alternateSelectedControlTextColor] : [NSColor blackColor]).CGColor;
 			textLayer.backgroundColor = (isSelected ? [NSColor alternateSelectedControlColor] : [NSColor whiteColor]).CGColor;
 		[CATransaction commit];
@@ -1597,7 +1600,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	NSNumber*		currIndex = nil;
 	
 	while( (currIndex = [enny nextObject]) )
-		[self itemNeedsDisplay: [currIndex intValue]];
+		[self itemNeedsDisplay: [currIndex unsignedIntegerValue]];
 }
 
 // Position is in flipped coordinates:
@@ -1617,11 +1620,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 // Rect is in item coordinates, i.e. flipped Y-axis compared to Quartz:
 //	Call invalidateVisibleItemsCache before this if you are recacheing to get rid of the old items.
--(void) extendCacheByVisibleItemIndexesInRect: (NSRect)inBox startingAtIndex: (int)startIdx
+-(void) extendCacheByVisibleItemIndexesInRect: (NSRect)inBox startingAtIndex: (NSUInteger)startIdx
 {
-	int		x = 0,
-			count = [[self dataSource] numberOfItemsInDistributedView:self];
-	NSRect  currBox;
+	NSUInteger		x = 0,
+					count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSRect  		currBox;
 	
 	if( [delegate respondsToSelector: @selector(distributedViewDidStartCachingItems:)] )
 		[delegate distributedViewDidStartCachingItems: self];
@@ -1633,13 +1636,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		currBox = [self rectForItemAtIndex: x];
 		if( NSIntersectsRect( currBox, inBox ) )	// Visible!
         {
-            NSNumber*   iidx = [NSNumber numberWithInt: x];
+            NSNumber*   iidx = [NSNumber numberWithInteger: x];
 			[visibleItems addObject: iidx];
             
             if( supportsToolTips )
             {
                 currBox = [self flipRectsYAxis: currBox];
-                [self addToolTipRect: currBox owner: self userData: (void*) x];
+                [self addToolTipRect: currBox owner: self userData: (void*)(intptr_t) x];
             }
         }
 	}
@@ -1712,8 +1715,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	[self addPositionsOfItems: itemsArr toPasteboard: pb];
 	
 	// Actually commence the drag:
+	// +++ Update to use NSDraggingItems.
+#pragma clang diagnostic push
+#pragma clang diagnostic ignored "-Wdeprecated-declarations"
 	[self dragImage:theDragImg at:dragStartImagePos offset:NSMakeSize(0,0)
 				event:event pasteboard:pb source:self slideBack:YES];
+#pragma clang diagnostic pop
 }
 
 
@@ -1747,7 +1754,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// Build an array of our icon positions:
 	while( (currIndex = [enny nextObject]) )
 	{
-		int						x = [currIndex intValue];
+		NSUInteger				x = [currIndex unsignedIntegerValue];
 		NSRect					box;
 		
 		box.size = cellSize;
@@ -1833,7 +1840,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	while( (currIndex = [enny nextObject]) )
 	{
 		NSRect		currBox;
-		int			x = [currIndex intValue];
+		NSUInteger	x = [currIndex unsignedIntegerValue];
 		
 		currBox.size = cellSize;
 		currBox.origin = [[self dataSource] distributedView: self positionForCell:prototype
@@ -1871,7 +1878,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	NSDragOperation		retVal;
 	
-	if( dragDestItem != -1 )
+	if( dragDestItem != NSNotFound )
 		[self itemNeedsDisplay: dragDestItem];
 	
 	NSPoint viewPoint = [self convertPoint:[sender draggingLocation] fromView:nil];
@@ -1903,13 +1910,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	NSDragOperation		retVal;
 	
-	if( dragDestItem != -1 )
+	if( dragDestItem != NSNotFound )
 		[self itemNeedsDisplay: dragDestItem];
 	dragDestItem = [self getItemIndexAtPoint:[self convertPoint:[sender draggingLocation] fromView:nil]];
 	
 	retVal = [[self dataSource] distributedView:self validateDrop:sender
 						proposedItem: &dragDestItem];
-	if( dragDestItem != -1 )
+	if( dragDestItem != NSNotFound )
 		[self itemNeedsDisplay: dragDestItem];
 	
 	return retVal;
@@ -1928,8 +1935,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)  draggingExited:(id <NSDraggingInfo>)sender
 {
-	dragDestItem = -1;
-	mouseItem = -1;
+	dragDestItem = NSNotFound;
+	mouseItem = NSNotFound;
     
     runtimeFlags.bits.drawDropHilite = NO;
     [self setNeedsDisplay: YES];
@@ -1950,8 +1957,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	BOOL retVal = [[self dataSource] distributedView:self acceptDrop:sender
 							onItem:dragDestItem];
 							
-	dragDestItem = -1;
-	mouseItem = -1;
+	dragDestItem = NSNotFound;
+	mouseItem = NSNotFound;
     
     runtimeFlags.bits.drawDropHilite = NO;
     [self invalidateVisibleItemsCache];
@@ -2008,14 +2015,13 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void)	mouseDown: (NSEvent*)event
 {
-	BOOL	layerBased = [self.dataSource respondsToSelector: @selector(distributedView:positionAtItemIndex:)];
 	lastPos = [event locationInWindow];
 	lastPos = [self convertPoint:lastPos fromView:nil];
     mouseItem = [self getItemIndexAtPoint: lastPos];
 	
     [[self window] endEditingFor: prototype];
     
-	if( mouseItem == -1 )	// No item hit? Remove selection and start mouse tracking for selection rect.
+	if( mouseItem == NSNotFound )	// No item hit? Remove selection and start mouse tracking for selection rect.
 	{
 		if( !flags.bits.allowsEmptySelection )	// Empty selection not allowed? Can't unselect, and since rubber band needs to reset the selection, can't do selection rect either.
 			return;
@@ -2052,9 +2058,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		if( ([event modifierFlags] & NSShiftKeyMask) == NSShiftKeyMask && flags.bits.allowsMultipleSelection )    // Single click but shift key held down?
 		{
 			// If shift key is down, toggle this item's selection status
-			if( [selectionSet containsObject:[NSNumber numberWithInt: mouseItem]] )
+			if( [selectionSet containsObject:[NSNumber numberWithInteger: mouseItem]] )
 			{
-				[selectionSet removeObject:[NSNumber numberWithInt: mouseItem]];
+				[selectionSet removeObject:[NSNumber numberWithInteger: mouseItem]];
 				[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
 														object: self];
 				[self itemNeedsDisplay: mouseItem];
@@ -2065,7 +2071,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				if( ![delegate respondsToSelector: @selector(distributedView:shouldSelectItemIndex:)]
 					|| [delegate distributedView:self shouldSelectItemIndex: mouseItem] )
 				{
-					[selectionSet addObject:[NSNumber numberWithInt: mouseItem]];
+					[selectionSet addObject:[NSNumber numberWithInteger: mouseItem]];
 					if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 						[delegate distributedView:self didSelectItemIndex: mouseItem];
 					[self itemNeedsDisplay: mouseItem];
@@ -2081,12 +2087,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			if( ![delegate respondsToSelector: @selector(distributedView:shouldSelectItemIndex:)]
 				|| [delegate distributedView:self shouldSelectItemIndex: mouseItem] )
 			{
-				if( ![selectionSet containsObject:[NSNumber numberWithInt: mouseItem]] )
+				if( ![selectionSet containsObject:[NSNumber numberWithInteger: mouseItem]] )
 				{	
 					NSSet*	oldSelection = [[selectionSet copy] autorelease];
 					[selectionSet removeAllObjects];
 					[self itemSetNeedsDisplay: oldSelection];    // Possible threading deadlock here ... ?
-					[selectionSet addObject:[NSNumber numberWithInt: mouseItem]];
+					[selectionSet addObject:[NSNumber numberWithInteger: mouseItem]];
 					if( [delegate respondsToSelector: @selector(distributedView:didSelectItemIndex:)] )
 						[delegate distributedView:self didSelectItemIndex: mouseItem];
 					[[NSNotificationCenter defaultCenter] postNotificationName: UKDistributedViewSelectionDidChangeNotification
@@ -2099,7 +2105,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		}
 	}
 	
-	if( [self useSelectionRect] || mouseItem != -1 )	// Don't start tracking if we're dealing with a selection rect and we're not allowed to do a selection rect.
+	if( [self useSelectionRect] || mouseItem != NSNotFound )	// Don't start tracking if we're dealing with a selection rect and we're not allowed to do a selection rect.
 		[self initiateMove];
 }
 
@@ -2124,7 +2130,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	NSPoint				eventLocation = [event locationInWindow];
 	eventLocation = [self convertPoint:eventLocation fromView:nil];
 	
-	if( mouseItem == -1 && [self useSelectionRect] )	// No item hit? Selection rect!
+	if( mouseItem == NSNotFound && [self useSelectionRect] )	// No item hit? Selection rect!
 	{
 		[self setNeedsDisplayInRect: NSInsetRect(selectionRect, -1, -1)];	// Invalidate old position.
 		
@@ -2151,7 +2157,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		// Select items in the rect:
 		[self selectItemsInRect:selectionRect byExtendingSelection:NO];
 	}
-	else if( flags.bits.dragMovesItems && mouseItem != -1 )	// Item hit? Drag the item, if we're set up that way:
+	else if( flags.bits.dragMovesItems && mouseItem != NSNotFound )	// Item hit? Drag the item, if we're set up that way:
 	{
 		BOOL	dataSourceDoesRemoteDrags = [[self dataSource] respondsToSelector: @selector(distributedView:writeItems:toPasteboard:)];
 		// If mouse is inside our rect, drag locally:
@@ -2169,7 +2175,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			while( (currentItemNum = [enummy nextObject]) )
 			{
 				NSPoint		pos;
-				int			x = [currentItemNum intValue];
+				NSUInteger	x = [currentItemNum unsignedIntegerValue];
 				
 				if( layerBased )
 					pos = [[self dataSource] distributedView:self positionAtItemIndex: x];
@@ -2207,7 +2213,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	[[self window] setAcceptsMouseMovedEvents:NO];
 	
-	if( mouseItem == -1 )	// No item hit? Must be selection rect. Reset that.
+	if( mouseItem == NSNotFound )	// No item hit? Must be selection rect. Reset that.
 	{
 		[self setNeedsDisplayInRect: NSInsetRect(selectionRect,-1,-1)];	// Make sure old selection rect is removed.
 		selectionRect.size.width = selectionRect.size.height = 0;
@@ -2226,7 +2232,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			[self cellClicked:self];
 		}
 		lastPos = eventLocation;
-		mouseItem = -1;
+		mouseItem = NSNotFound;
 		
 		if( flags.bits.dragMovesItems && (([event deltaX] != 0 || [event deltaY] != 0) || flags.bits.snapToGrid) )	// Item hit? Drag the item, if we're set up that way:
 		{
@@ -2242,11 +2248,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				
 				if( layerBased )
 				{
-					ibox.origin = [[self dataSource] distributedView:self positionAtItemIndex: [currentItemNum intValue]];
+					ibox.origin = [[self dataSource] distributedView:self positionAtItemIndex: [currentItemNum unsignedIntegerValue]];
 				}
 				else
 				{
-					ibox.origin = [[self dataSource] distributedView:self positionForCell:nil atItemIndex: [currentItemNum intValue]];
+					ibox.origin = [[self dataSource] distributedView:self positionForCell:nil atItemIndex: [currentItemNum unsignedIntegerValue]];
 					[self setNeedsDisplayInRect: [self flipRectsYAxis: ibox]];
 				}
 				
@@ -2261,12 +2267,12 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 					
 					ibox = [self forceRectToGrid: ibox];
 					if( !layerBased )
-						[self itemNeedsDisplay: [currentItemNum intValue]];
+						[self itemNeedsDisplay: [currentItemNum unsignedIntegerValue]];
 				}
 				
-				[[self dataSource] distributedView:self setPosition:ibox.origin forItemIndex: [currentItemNum intValue]];
+				[[self dataSource] distributedView:self setPosition:ibox.origin forItemIndex: [currentItemNum unsignedIntegerValue]];
 				if( !layerBased )
-					[self itemNeedsDisplay: [currentItemNum intValue]];
+					[self itemNeedsDisplay: [currentItemNum unsignedIntegerValue]];
 			}
 		}
 	}
@@ -2299,7 +2305,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(NSString*)    view:(NSView *)view stringForToolTip:(NSToolTipTag)tag point:(NSPoint)point userData:(void *)userData
 {
-    int     x = (int) userData;
+    NSUInteger     x = (intptr_t) userData;
     
     if( [[self dataSource] respondsToSelector: @selector(distributedView:toolTipForItemAtIndex:)] )
         return [[self dataSource] distributedView: self toolTipForItemAtIndex: x];
@@ -2339,7 +2345,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// try to preserve the selection set here, this is most likely called when the current set
 	// of items has changed (but not to a different set)
 	
-    int ic = [delegate numberOfItemsInDistributedView: self];
+    NSUInteger ic = [delegate numberOfItemsInDistributedView: self];
 	NSMutableSet* sel = selectionSet;
     selectionSet = [[NSMutableSet alloc] init];
     if( ic > oldItemCount )
@@ -2418,9 +2424,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(IBAction)	rescrollItems: (id)sender
 {
-	int		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
-	int		leftPos = INT_MAX, topPos = INT_MAX,
-			leftoffs, topoffs;
+	NSUInteger		x, count = [[self dataSource] numberOfItemsInDistributedView:self];
+	NSUInteger		leftPos = INT_MAX, topPos = INT_MAX,
+					leftoffs, topoffs;
 	
 	//  Find topmost and leftmost positions of our items:
 	for( x = 0; x < count; x++ )
@@ -2513,9 +2519,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
                         NSParameterAssert instead of quietly returning.
    -------------------------------------------------------------------------- */
 
--(void) scrollItemToVisible: (int)index
+-(void) scrollItemToVisible: (NSUInteger)index
 {
-	NSParameterAssert( index >= 0 && index < [[self dataSource] numberOfItemsInDistributedView: self] );
+	NSParameterAssert( index != NSNotFound && index < [[self dataSource] numberOfItemsInDistributedView: self] );
 
 	NSScrollView*	sv = [self enclosingScrollView];
 	NSRect          docRect = [sv documentVisibleRect];
@@ -2652,11 +2658,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) moveRight:(id)sender
 {
-    int         selIndex = [self selectedItemIndex];
-    if( selIndex < 0 )
+    NSUInteger         selIndex = [self selectedItemIndex];
+    if( selIndex == NSNotFound )
         selIndex = 0;
 	NSRect		flippedSearchBox = [self rectForItemAtIndex: selIndex];
-	int			foundIndex = -1;
+	NSUInteger	foundIndex = NSNotFound;
 	
 	flippedSearchBox.origin.x += cellSize.width;
 	flippedSearchBox = NSInsetRect( flippedSearchBox, 8, 8 );
@@ -2666,7 +2672,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	else													// But otherwise fall back on full list.
 		foundIndex = [self getUncachedItemIndexInRect: flippedSearchBox];
 	
-	if( foundIndex > -1 )
+	if( foundIndex != NSNotFound )
     {
 		[self selectItem: foundIndex byExtendingSelection: NO];
         [self scrollItemToVisible: foundIndex];
@@ -2685,11 +2691,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) moveLeft:(id)sender
 {
-    int         selIndex = [self selectedItemIndex];
-    if( selIndex < 0 )
+    NSUInteger			selIndex = [self selectedItemIndex];
+    if( selIndex == NSNotFound )
         selIndex = [[self dataSource] numberOfItemsInDistributedView: self] -1;
-	NSRect		flippedSearchBox = [self rectForItemAtIndex: selIndex];
-	int			foundIndex = -1;
+	NSRect				flippedSearchBox = [self rectForItemAtIndex: selIndex];
+	NSUInteger			foundIndex = NSNotFound;
 	
 	flippedSearchBox.origin.x -= cellSize.width;
 	flippedSearchBox = NSInsetRect( flippedSearchBox, 8, 8 );
@@ -2699,7 +2705,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	else													// But otherwise fall back on full list.
 		foundIndex = [self getUncachedItemIndexInRect: flippedSearchBox];
 	
-	if( foundIndex > -1 )
+	if( foundIndex != NSNotFound )
     {
 		[self selectItem: foundIndex byExtendingSelection: NO];
         [self scrollItemToVisible: foundIndex];
@@ -2718,11 +2724,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) moveUp:(id)sender
 {
-    int         selIndex = [self selectedItemIndex];
-    if( selIndex < 0 )
+    NSUInteger	selIndex = [self selectedItemIndex];
+    if( selIndex == NSNotFound )
         selIndex = [[self dataSource] numberOfItemsInDistributedView: self] -1;
 	NSRect		flippedSearchBox = [self rectForItemAtIndex: selIndex];
-	int			foundIndex = -1;
+	NSUInteger	foundIndex = NSNotFound;
 	
 	flippedSearchBox.origin.y -= cellSize.height;
 	flippedSearchBox = NSInsetRect( flippedSearchBox, 8, 8 );
@@ -2732,7 +2738,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	else													// But otherwise fall back on full list.
 		foundIndex = [self getUncachedItemIndexInRect: flippedSearchBox];
 	
-	if( foundIndex > -1 )
+	if( foundIndex != NSNotFound )
     {
 		[self selectItem: foundIndex byExtendingSelection: NO];
         [self scrollItemToVisible: foundIndex];
@@ -2751,11 +2757,11 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) moveDown:(id)sender
 {
-    int         selIndex = [self selectedItemIndex];
-    if( selIndex < 0 )
+    NSUInteger	selIndex = [self selectedItemIndex];
+    if( selIndex == NSNotFound )
         selIndex = 0;
 	NSRect		flippedSearchBox = [self rectForItemAtIndex: selIndex];
-	int			foundIndex = -1;
+	NSUInteger	foundIndex = NSNotFound;
 	
 	flippedSearchBox.origin.y += cellSize.height;
 	flippedSearchBox = NSInsetRect( flippedSearchBox, 8, 8 );
@@ -2765,7 +2771,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	else													// But otherwise fall back on full list.
 		foundIndex = [self getUncachedItemIndexInRect: flippedSearchBox];
 	
-	if( foundIndex > -1 )
+	if( foundIndex != NSNotFound )
     {
 		[self selectItem: foundIndex byExtendingSelection: NO];
         [self scrollItemToVisible: foundIndex];
@@ -2797,7 +2803,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) insertTab: (id)sender
 {
-    int selItem = [self selectedItemIndex];
+    NSUInteger selItem = [self selectedItemIndex];
     selItem++;
     if( selItem >= [[self dataSource] numberOfItemsInDistributedView: self] )
         selItem = 0;
@@ -2817,9 +2823,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 
 -(void) insertBacktab: (id)sender
 {
-    int selItem = [self selectedItemIndex];
+    NSUInteger selItem = [self selectedItemIndex];
     selItem--;
-    if( selItem < 0 )
+    if( selItem == NSNotFound )
         selItem = [[self dataSource] numberOfItemsInDistributedView: self] -1;
     
     [self selectItem: selItem byExtendingSelection: NO];
@@ -2850,9 +2856,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     
 	NSLog( @"typeaheadstring: %@", typeAheadSearchStr );
 	
-    int matchItem = [delegate distributedView:self itemIndexForString: typeAheadSearchStr
+    NSUInteger matchItem = [delegate distributedView:self itemIndexForString: typeAheadSearchStr
                                     options: NSCaseInsensitiveSearch | NSAnchoredSearch];
-    if( matchItem != -1 )
+    if( matchItem != NSNotFound )
     {
         [self selectItem: matchItem byExtendingSelection: NO];
         [self scrollItemToVisible: matchItem];
@@ -2875,9 +2881,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2004-12-01	UK	Documented.
    -------------------------------------------------------------------------- */
 
--(void) editItemIndex: (int)item withEvent:(NSEvent*)evt /*may be NIL*/ select:(BOOL)select
+-(void) editItemIndex: (NSUInteger)item withEvent:(NSEvent*)evt /*may be NIL*/ select:(BOOL)select
 {
-	NSParameterAssert( item >= 0 && item < [[self dataSource] numberOfItemsInDistributedView: self] );
+	NSParameterAssert( item != NSNotFound && item < [[self dataSource] numberOfItemsInDistributedView: self] );
     
 	// Take over editor:
 	if( ![[self window] makeFirstResponder: self] )		// Does it give up willingly?
@@ -2963,7 +2969,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 						forItemIndex: editedItem];
 			[self itemNeedsDisplay: editedItem];
 		}
-		editedItem = -1;
+		editedItem = NSNotFound;
     }
 }
 
@@ -2974,7 +2980,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     [self discardCursorRects];
     [self addCursorRect: [self bounds] cursor: [NSCursor arrowCursor]];
     
-    if( editedItem != -1 )
+    if( editedItem != NSNotFound )
     {
         NSRect      cellBox = [self rectForItemAtIndex: editedItem];
         cellBox = [self flipRectsYAxis: cellBox];
@@ -3017,7 +3023,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	// Now use the cache to generate layers for all visible items:
 	NSEnumerator*   indexEnny = [visibleItems objectEnumerator];
 	NSNumber*		currIndex = nil;
-	int				icount = [[self dataSource] numberOfItemsInDistributedView: self];
+	NSUInteger		icount = [[self dataSource] numberOfItemsInDistributedView: self];
 	
 	self.wantsLayer = YES;
 	self.layer.sublayers = @[];
@@ -3027,7 +3033,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	while( (currIndex = [indexEnny nextObject]) )
 	{
 		NSRect		box = NSMakeRect( 0,0, cellSize.width,cellSize.height );
-		int			x = [currIndex intValue];
+		NSUInteger	x = [currIndex unsignedIntegerValue];
 		
 		if( x > icount )
 			continue;
@@ -3037,7 +3043,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		NSImage*	img = [[self dataSource] distributedView: self imageAtItemIndex: x];
 		NSString*	title = [[self dataSource] distributedView: self titleAtItemIndex: x];
 		
-		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInt: x]];
+		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInteger: x]];
 		
 		isSelected |= (dragDestItem == x);
 		
@@ -3170,8 +3176,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2004-12-01	UK	Documented.
    -------------------------------------------------------------------------- */
 
--(int)  distributedView: (UKDistributedView*)distributedView itemIndexForString: (NSString*)matchString
-                options:(unsigned)opts
+-(NSUInteger)  distributedView: (UKDistributedView*)distributedView itemIndexForString: (NSString*)matchString
+                options:(NSStringCompareOptions)opts
 {
 	// An ok default matching algorithm.  You can probably get better performance if you
 	//  implement this yourself, that way the NSCell doesn't have to get setup everytime,
@@ -3179,8 +3185,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	id dataSource = [distributedView dataSource];
 	id prototype = [distributedView prototype];
-	int n = [dataSource numberOfItemsInDistributedView:distributedView];
-	int i = 0;
+	NSUInteger n = [dataSource numberOfItemsInDistributedView:distributedView];
+	NSUInteger i = 0;
 	BOOL	layerBased = [distributedView.dataSource respondsToSelector: @selector(distributedView:titleAtItemIndex:)];
 	
 	// Find the closest match:
@@ -3205,7 +3211,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		i += 1;
 	}
 
-	return -1;
+	return NSNotFound;
 }
 
 @end
