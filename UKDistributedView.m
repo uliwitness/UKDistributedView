@@ -767,6 +767,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     if( ![[self dataSource] respondsToSelector: @selector(distributedView:setPosition:forItemIndex:)] )
         return;
     
+	BOOL			layerBased = [self.dataSource respondsToSelector: @selector(distributedView:titleAtItemIndex:)];
 	NSRect			myFrame = [self frame];
 	int				numCols,
 					x,
@@ -802,7 +803,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	
 	[[self window] invalidateCursorRectsForView:self];
 	[self contentSizeChanged];
-	[self setNeedsDisplay:YES];
+	if( layerBased )
+		[self reloadData];
+	else
+		[self setNeedsDisplay:YES];
 }
 
 
@@ -1554,6 +1558,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	{
 		[CATransaction begin];
 		[CATransaction setAnimationDuration: 0.0];
+		[CATransaction setDisableActions: YES];
 			CALayer*	containerLayer = [self.layer.sublayers objectAtIndex: itemNb];
 			[containerLayer setFrame: box];
 			CALayer*		imageLayer = [containerLayer.sublayers objectAtIndex: 0];
@@ -3084,6 +3089,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			NSRect			labelRect = box;
 			labelRect.origin = NSZeroPoint;
 			labelRect.size.height /= 4;
+			labelRect.size.width -= 4;
+			labelRect.origin.x += 2;
 			CATextLayer*	textLayer = [CATextLayer layer];
 			textLayer.frame = labelRect;
 			textLayer.string = title;
