@@ -31,6 +31,7 @@
 
 #import "UKDistributedView.h"
 #import <limits.h>
+#import <QuartzCore/QuartzCore.h>
 
 
 /* -----------------------------------------------------------------------------
@@ -2980,6 +2981,9 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	NSNumber*		currIndex = nil;
 	int				icount = [[self dataSource] numberOfItemsInDistributedView: self];
 	
+	self.wantsLayer = YES;
+	self.layer.sublayers = @[];
+	
 	//NSLog(@"count visible: %d",[visibleItems count]);
 	
 	while( (currIndex = [indexEnny nextObject]) )
@@ -2993,6 +2997,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		box.origin = [[self dataSource] distributedView: self positionAtItemIndex: x];
 		box = [self snapRectToGrid: box];	// Does nothing if "force to grid" is off.
 		NSImage*	img = [[self dataSource] distributedView: self imageAtItemIndex: x];
+		NSString*	title = [[self dataSource] distributedView: self titleAtItemIndex: x];
 		
 		BOOL		isSelected = [selectionSet containsObject:[NSNumber numberWithInt: x]];
 		
@@ -3007,7 +3012,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			if( NSIntersectsRect(indicatorBox, rect) )
 			{
 				CALayer*	snapGuideLayer = [CALayer layer];
-				snapGuideLayer.bounds = indicatorBox;
+				snapGuideLayer.frame = indicatorBox;
 				snapGuideLayer.contents = img;
 				snapGuideLayer.opacity = 0.7;
 				snapGuideLayer.contentsGravity = kCAGravityResizeAspect;
@@ -3019,9 +3024,56 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		if( NSIntersectsRect(box, rect) )
 		{
 			CALayer*	containerLayer = [CALayer layer];
-			containerLayer.bounds = box;
-			containerLayer.contents = img;
-			containerLayer.contentsGravity = kCAGravityResizeAspect;
+			containerLayer.frame = box;
+			containerLayer.masksToBounds = YES;
+//			if( isSelected )
+//			{
+//				containerLayer.borderWidth = 1;
+//				containerLayer.borderColor = [NSColor whiteColor].CGColor;
+//				containerLayer.backgroundColor = [NSColor lightGrayColor].CGColor;
+//			}
+			
+			CALayer*	imageLayer = [CALayer layer];
+			NSRect		imageRect = box;
+			imageRect.size.width /= 2;
+			imageRect.size.height /= 2;
+			imageRect.origin.y = box.size.height / 4;
+			imageRect.origin.x = (box.size.width -imageRect.size.width) /2;
+			
+			imageLayer.frame = imageRect;
+			imageLayer.contents = img;
+			imageLayer.contentsGravity = kCAGravityResizeAspect;
+//			imageLayer.borderWidth = 2;
+//			imageLayer.borderColor = [NSColor cyanColor].CGColor;
+			[containerLayer addSublayer: imageLayer];
+			
+			NSRect			labelRect = box;
+			labelRect.origin = NSZeroPoint;
+			labelRect.size.height /= 4;
+			CATextLayer*	textLayer = [CATextLayer layer];
+			textLayer.frame = labelRect;
+			textLayer.string = title;
+			textLayer.truncationMode = kCATruncationMiddle;
+			textLayer.alignmentMode = kCAAlignmentCenter;
+//			textLayer.borderWidth = 2;
+			textLayer.fontSize = [NSFont systemFontSize];
+			textLayer.font = [NSFont systemFontOfSize: [NSFont systemFontSize]];
+			textLayer.cornerRadius = labelRect.size.height / 3;
+			textLayer.contentsGravity = kCAGravityCenter;
+			if( isSelected )
+			{
+				textLayer.foregroundColor = [NSColor alternateSelectedControlTextColor].CGColor;
+				textLayer.backgroundColor = [NSColor alternateSelectedControlColor].CGColor;
+//				containerLayer.borderColor = [NSColor keyboardFocusIndicatorColor].CGColor;
+			}
+			else
+			{
+				textLayer.foregroundColor = [NSColor blackColor].CGColor;
+				textLayer.backgroundColor = [NSColor whiteColor].CGColor;
+//				containerLayer.borderColor = [NSColor greenColor].CGColor;
+			}
+			[containerLayer addSublayer: textLayer];
+			
 			[self.layer addSublayer: containerLayer];
 		}
 	}
