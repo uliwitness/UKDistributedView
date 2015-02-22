@@ -37,10 +37,10 @@
 // -----------------------------------------------------------------------------
 
 #define UKFIC_TEXT_VERTMARGIN		1		// How many pixels is selection supposed to extend above and below the title?
-#define UKFIC_TEXT_HORZMARGIN		3		// How many pixels is selection supposed to extend to the left and right of the title?
+#define UKFIC_TEXT_HORZMARGIN		1		// How many pixels is selection supposed to extend to the left and right of the title?
 #define UKFIC_SELBOX_VERTMARGIN		1		// How much distance do you want between top of cell/title and icon's highlight box?
 #define UKFIC_SELBOX_HORZMARGIN		1		// How much distance do you want between right/left edges of cell and icon's highlight box?
-#define UKFIC_SELBOX_OUTLINE_WIDTH  2		// Width of outline of selection box around icon.
+#define UKFIC_SELBOX_OUTLINE_WIDTH  1		// Width of outline of selection box around icon.
 #define UKFIC_IMAGE_VERTMARGIN		2		// Distance between maximum top/bottom edges of image and highlight box.
 #define UKFIC_IMAGE_HORZMARGIN		2		// Distance between maximum left/right edges of image and highlight box.
 

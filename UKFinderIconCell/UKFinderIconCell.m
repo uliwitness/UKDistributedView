@@ -523,7 +523,7 @@
 	
 	// Draw text background either with white, or with "selected" color:
 	[txBgColor set];
-	[[NSBezierPath bezierPathWithCappedBoxInRect: textBgBox] fill];   // draw text bg.
+	[[NSBezierPath bezierPathWithRoundedRect: textBgBox xRadius: truncf(textBgBox.size.height /4) yRadius: truncf(textBgBox.size.height /4)] fill];   // draw text bg.
 	
 	// Draw actual text:
 	if( !flags.bits.currentlyEditing )
@@ -540,10 +540,15 @@
 		
 		// Draw selection outline:
 		NSColor*	scc = [boxColor colorWithAlphaComponent: alpha];
-		[[scc colorWithAlphaComponent: 0.7] set];			// Slightly transparent body first.
-		[NSBezierPath fillRect: imgBox];
-		[scc set];											// Opaque rounded boundaries next.
-		[NSBezierPath strokeRect: imgBox];
+		[[scc colorWithAlphaComponent: 0.5] set];			// Slightly transparent body first.
+		[[NSBezierPath bezierPathWithRoundedRect: imgBox xRadius: 4 yRadius: 4] fill];
+		[[scc colorWithAlphaComponent: 0.4] set];											// Opaque rounded boundaries next.
+		NSRect	imageLineBox = imgBox;
+		imageLineBox.origin.x += 0.5;
+		imageLineBox.origin.y += 0.5;
+		imageLineBox.size.width -= 1;
+		imageLineBox.size.height -= 1;
+		[[NSBezierPath bezierPathWithRoundedRect: imageLineBox xRadius: 4 yRadius: 4] stroke];
 		
 		// Clean up:
 		[NSBezierPath setDefaultLineJoinStyle: svLjs];
