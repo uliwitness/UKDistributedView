@@ -1571,7 +1571,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			CALayer*	containerLayer = [self.layer.sublayers objectAtIndex: itemNb];
 			[containerLayer setFrame: box];
 			CALayer*		imageLayer = [containerLayer.sublayers objectAtIndex: 0];
-			CATextLayer*	textLayer = [containerLayer.sublayers objectAtIndex: 1];
+			CATextLayer*	textLayer = (CATextLayer*)[containerLayer.sublayers objectAtIndex: 1];
 			imageLayer.contents = [self.delegate distributedView: self imageAtItemIndex: itemNb];
 			textLayer.string = [self.delegate distributedView: self titleAtItemIndex: itemNb];
 			BOOL	isSelected = [selectionSet containsObject: [NSNumber numberWithInteger: itemNb]];
