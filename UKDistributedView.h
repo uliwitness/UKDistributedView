@@ -408,6 +408,8 @@ typedef union  UKDVRuntimeFlags
 						draggingSourceOperationMaskForLocal: (BOOL)isLocal;
 
 // Specify where the dropped data should end up. On ("inside") an item, or just among them?
+//	For this to be called, you need to have called registerForDraggedTypes: (from NSView) to
+//	declare what types may be dropped.
 -(NSDragOperation)  distributedView: (UKDistributedView*)dv validateDrop: (id <NSDraggingInfo>)info
 						proposedItem: (NSUInteger*)row;	// Change "row", if you want. NSNotFound means it's not on any item.
 
