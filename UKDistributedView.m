@@ -2504,8 +2504,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 {
 	NSScrollView*	sv = [self enclosingScrollView];
 	NSClipView*     clip = [sv contentView];
+	NSRect			theBounds = self.enclosingScrollView.visibleRect;
+	theBounds.origin = p;
     
-	p = [clip constrainScrollPoint:p];
+	p = [clip constrainBoundsRect: theBounds].origin;
 	[clip scrollToPoint:p];
 	[sv reflectScrolledClipView:clip];
     
