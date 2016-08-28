@@ -320,6 +320,8 @@
 
         case NSImageLeft:
         case NSImageRight:
+        case NSImageLeading:
+        case NSImageTrailing:
             sz = truncf(box.size.height / 8);
             break;
         
@@ -396,6 +398,8 @@
 			case NSImageOnly:
 			case NSImageLeft:
 			case NSImageRight:
+			case NSImageLeading:
+			case NSImageTrailing:
 			case NSImageOverlaps:
 				break;
 		}
@@ -429,7 +433,7 @@
     
     imgSize = [NSImage scaledSize: [image size] toFitSize: box.size];
     
-    if( imagePos == NSImageLeft || imagePos == NSImageRight )
+    if( imagePos == NSImageLeft || imagePos == NSImageRight || imagePos == NSImageLeading || imagePos == NSImageTrailing )
         titleHReduce = imgSize.width +(UKFIC_SELBOX_HORZMARGIN +UKFIC_SELBOX_OUTLINE_WIDTH) *2;
     
 	// Truncate string if needed:
@@ -439,6 +443,17 @@
 	// Calculate rectangle for text:
 	txSize = [displayTitle sizeWithAttributes: attrs];
 	
+	NSCellImagePosition	actualPos = imagePos;
+	NSUserInterfaceLayoutDirection	layoutDir = [[NSApplication sharedApplication] userInterfaceLayoutDirection];
+	if( imagePos == NSImageLeading && layoutDir == NSUserInterfaceLayoutDirectionLeftToRight )
+		actualPos = NSImageLeft;
+	else if( imagePos == NSImageLeading && layoutDir == NSUserInterfaceLayoutDirectionRightToLeft )
+		actualPos = NSImageRight;
+	else if( imagePos == NSImageTrailing && layoutDir == NSUserInterfaceLayoutDirectionLeftToRight )
+		actualPos = NSImageRight;
+	else if( imagePos == NSImageTrailing && layoutDir == NSUserInterfaceLayoutDirectionRightToLeft )
+		actualPos = NSImageLeft;
+
 	if( imagePos == NSImageAbove		// Finder icon view (big, title below image).
 		|| imagePos == NSImageBelow )  // Title *above* image.
 	{
@@ -452,7 +467,9 @@
 									-UKFIC_TEXT_VERTMARGIN );		// Give us some room around our text.
 	}
 	else if( imagePos == NSImageLeft
-			|| imagePos == NSImageRight )
+			|| imagePos == NSImageRight
+			|| imagePos == NSImageLeading
+			|| imagePos == NSImageTrailing )
 	{
 		textBox.size = txSize;
 		textBox.origin.y += truncf((box.size.height -txSize.height) / 2);  // Center our text vertically in cell.
@@ -483,6 +500,14 @@
 			imgBox.size.width -= textBgBox.size.width;
 			break;
 		
+		case NSImageLeading:
+			imgBox.size.width -= textBgBox.size.width;
+			break;
+			
+		case NSImageTrailing:
+			imgBox.size.width -= textBgBox.size.width;
+			break;
+		
 		case NSNoImage:
 		case NSImageOnly:
 		case NSImageOverlaps:
@@ -491,7 +516,9 @@
 	}
 	
 	if( imagePos == NSImageRight
-		|| imagePos == NSImageLeft )
+		|| imagePos == NSImageLeft
+		|| imagePos == NSImageLeading
+		|| imagePos == NSImageTrailing )
 		imgBox = NSInsetRect( imgBox, UKFIC_SELBOX_VERTMARGIN +UKFIC_SELBOX_OUTLINE_WIDTH,
 										UKFIC_SELBOX_HORZMARGIN +UKFIC_SELBOX_OUTLINE_WIDTH );
 	else
@@ -509,12 +536,12 @@
 			imgBox.origin.x += truncf(diff/2);		// Center narrower box in cell.
 	}
 	
-	if( imagePos == NSImageLeft )
+	if( actualPos == NSImageLeft )
 	{
 		textBox.origin.x += imgBox.size.width +truncf(textBox.size.height /2) +(UKFIC_TEXT_VERTMARGIN *3);
 		textBgBox.origin.x += imgBox.size.width +truncf(textBox.size.height /2) +(UKFIC_TEXT_VERTMARGIN *3);
 	}
-	else if( imagePos == NSImageRight )
+	else if( actualPos == NSImageRight )
 	{
 		imgBox.origin.x = box.origin.x +box.size.width -imgBox.size.width -UKFIC_SELBOX_HORZMARGIN;
 		textBox.origin.x -= imgBox.size.width +(UKFIC_TEXT_VERTMARGIN *3);
