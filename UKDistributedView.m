@@ -1119,11 +1119,24 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			
 			// Draw the possibly clicked cell into an NSImage and find out which
 			//	pixel was clicked by the user:
-			NSImage*	hitTestImg = [[NSImage alloc] initWithSize: box.size];
-			[hitTestImg lockFocus];
+			NSBitmapImageRep*	hitTestImg = [[NSBitmapImageRep alloc]
+											  initWithBitmapDataPlanes: NULL
+											  pixelsWide: box.size.width
+											  pixelsHigh: box.size.height
+											  bitsPerSample: 8
+											  samplesPerPixel: 4
+											  hasAlpha: YES
+											  isPlanar: NO
+											  colorSpaceName: NSDeviceRGBColorSpace
+											  bitmapFormat: NSBitmapFormatAlphaFirst
+											  bytesPerRow: 0
+											  bitsPerPixel: 0];
+			NSGraphicsContext *gc = [NSGraphicsContext graphicsContextWithBitmapImageRep: hitTestImg];
+			[NSGraphicsContext saveGraphicsState];
+			[NSGraphicsContext setCurrentContext: gc];
 				// Make sure the image is transparent:
 				[[NSColor clearColor] set];
-				NSRectFillUsingOperation( NSMakeRect(0,0,box.size.width,box.size.height), NSCompositeClear );
+				NSRectFillUsingOperation( NSMakeRect(0, 0, box.size.width, box.size.height), NSCompositingOperationClear );
 				
 				// Fake the coordinate system the cell would have in real life:
 				NSAffineTransform*	at = [NSAffineTransform transform];
@@ -1132,8 +1145,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			
 				// Next, draw our cell and grab the color at our mouse:
 				[prototype drawWithFrame: box inView: self];
-				colorAtPoint = NSReadPixel(aPoint);
-			[hitTestImg unlockFocus];
+			[NSGraphicsContext restoreGraphicsState];
+
+			colorAtPoint = [hitTestImg colorAtX: aPoint.x y: aPoint.y];
+			
 			[hitTestImg release];
 			
 			/* Now if we've found a color, and if it's sufficiently
@@ -1480,7 +1495,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	[snapGuideImg lockFocus];
 		[prototype drawWithFrame: drawBox inView: self];
 	[snapGuideImg unlockFocus];
-	[snapGuideImg drawAtPoint: box.origin fromRect: NSZeroRect operation: NSCompositeSourceAtop fraction: 0.2];
+	[snapGuideImg drawAtPoint: box.origin fromRect: NSZeroRect operation: NSCompositingOperationSourceAtop fraction: 0.2];
   #else
 	box = NSInsetRect( box, 2, 2 );
 	box.origin.x += 0.5; box.origin.y += 0.5;	// Move them onto full pixels.
@@ -1706,7 +1721,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
     NSMutableSet*   set = [NSMutableSet setWithArray: visibleItems];
     [set intersectSet: selectionSet];
 	NSArray*		itemsArr = [set allObjects];
-	NSPasteboard*   pb = [NSPasteboard pasteboardWithName: NSDragPboard];
+	NSPasteboard*   pb = [NSPasteboard pasteboardWithName: NSPasteboardNameDrag];
 	NSImage*		theDragImg = [self dragImageForItems: itemsArr
 											event: event
 											dragImageOffset: &dragStartImagePos];
@@ -1860,7 +1875,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 	}
 	
 	[img drawAtPoint:NSZeroPoint fromRect:NSMakeRect(0.0, 0.0, extents.size.width, extents.size.height)
-		   operation:NSCompositeCopy fraction:.5];
+		   operation:NSCompositingOperationCopy fraction:.5];
 	
 	[img unlockFocus];
 	
@@ -2061,7 +2076,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		if( !flags.bits.allowsMultipleSelection )
 			[self deselectAll: nil];
 		
-		if( ([event modifierFlags] & NSShiftKeyMask) == NSShiftKeyMask && flags.bits.allowsMultipleSelection )    // Single click but shift key held down?
+		if( ([event modifierFlags] & NSEventModifierFlagShift) == NSEventModifierFlagShift && flags.bits.allowsMultipleSelection )    // Single click but shift key held down?
 		{
 			// If shift key is down, toggle this item's selection status
 			if( [selectionSet containsObject:[NSNumber numberWithInteger: mouseItem]] )
@@ -2172,8 +2187,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 			NSEnumerator*		enummy = [selectionSet objectEnumerator];
 			NSNumber*			currentItemNum;
 		
-			if( ((([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
-					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.bits.snapToGrid))
+			if( ((([event modifierFlags] & NSEventModifierFlagCommand) == NSEventModifierFlagCommand && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
+					|| (([event modifierFlags] & NSEventModifierFlagCommand) != NSEventModifierFlagCommand && flags.bits.snapToGrid))
 					&& !flags.bits.forceToGrid
 					&& flags.bits.showSnapGuides )
 				runtimeFlags.bits.drawSnappedRects = YES;
@@ -2266,8 +2281,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				ibox.origin.y += [event deltaY];
 				
 				// Apply grid to item, if necessary:
-				if( (([event modifierFlags] & NSCommandKeyMask) == NSCommandKeyMask && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
-					|| (([event modifierFlags] & NSCommandKeyMask) != NSCommandKeyMask && flags.bits.snapToGrid) 
+				if( (([event modifierFlags] & NSEventModifierFlagCommand) == NSEventModifierFlagCommand && !flags.bits.snapToGrid)		// snapToGrid is toggled using command key.
+					|| (([event modifierFlags] & NSEventModifierFlagCommand) != NSEventModifierFlagCommand && flags.bits.snapToGrid)
 					|| flags.bits.forceToGrid )
 				{
 					

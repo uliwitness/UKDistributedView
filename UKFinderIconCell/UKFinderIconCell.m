@@ -610,7 +610,7 @@
 		imgBox.origin.y -= imgBox.size.height;
     }
 	
-	[image drawInRect: imgBox fromRect: imgRect operation: NSCompositeSourceOver fraction: alpha];
+	[image drawInRect: imgBox fromRect: imgRect operation: NSCompositingOperationSourceOver fraction: alpha];
 
 	/*if( flags.bits.flipped )
 		[image compositeToPoint: NSMakePoint(imgBox.origin.x,imgBox.origin.y +actualSize.height) operation: NSCompositeSourceOver fraction: alpha];
@@ -924,7 +924,7 @@
 {
    if( imagePosition == NSImageAbove
 		|| imagePosition == NSImageBelow )
-		[self setAlignment: NSCenterTextAlignment];
+		[self setAlignment: NSTextAlignmentCenter];
 }
 
 
