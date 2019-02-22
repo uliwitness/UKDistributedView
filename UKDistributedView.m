@@ -1147,7 +1147,8 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 				[prototype drawWithFrame: box inView: self];
 			[NSGraphicsContext restoreGraphicsState];
 
-			colorAtPoint = [hitTestImg colorAtX: aPoint.x y: aPoint.y];
+			NSPoint relativePoint = NSMakePoint(aPoint.x - box.origin.x, aPoint.y - box.origin.y);
+			colorAtPoint = [hitTestImg colorAtX: relativePoint.x y: relativePoint.y];
 			
 			[hitTestImg release];
 			
