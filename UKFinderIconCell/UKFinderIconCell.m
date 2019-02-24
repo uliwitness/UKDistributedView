@@ -73,15 +73,6 @@
 	return self;
 }
 
--(id)   initImageCell: (NSImage*)img
-{
-	if(( self = [self initTextCell: @"UKDVUKDT"] ))
-	{
-		[self setImage: img];
-	}
-	return self;
-}
-
 
 /* -----------------------------------------------------------------------------
 	initWithCoder:

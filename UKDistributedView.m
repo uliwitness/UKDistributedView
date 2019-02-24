@@ -1998,7 +1998,7 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2004-12-07	UK	Created.
    -------------------------------------------------------------------------- */
 
--(void) draggedImage: (NSImage*)image endedAt: (NSPoint)screenPoint operation: (NSDragOperation)operation
+-(void) draggingSession: (NSDraggingSession *)session endedAtPoint: (NSPoint)screenPoint operation: (NSDragOperation)operation;
 {
     if( [[self dataSource] respondsToSelector: @selector(distributedView:dragEndedWithOperation:)] )
         [[self dataSource] distributedView: self dragEndedWithOperation: operation];
@@ -2013,10 +2013,10 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		2003-12-20	UK	Created.
    -------------------------------------------------------------------------- */
 
--(NSDragOperation)  draggingSourceOperationMaskForLocal:(BOOL)isLocal
+-(NSDragOperation) draggingSession: (NSDraggingSession *)session sourceOperationMaskForDraggingContext: (NSDraggingContext)context
 {
 	if( [[self dataSource] respondsToSelector:@selector(distributedView:draggingSourceOperationMaskForLocal:)] )
-		return [[self dataSource] distributedView:self draggingSourceOperationMaskForLocal: isLocal];
+		return [[self dataSource] distributedView:self draggingSourceOperationMaskForLocal: context == NSDraggingContextWithinApplication];
 	else
 		return NSDragOperationNone;
 }
