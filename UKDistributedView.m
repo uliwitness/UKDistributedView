@@ -2021,6 +2021,22 @@ NSString*		UKDistributedViewSelectionDidChangeNotification = @"UKDistributedView
 		return NSDragOperationNone;
 }
 
+-(void)	rightMouseDown: (NSEvent*)event
+{
+	if( [delegate respondsToSelector: @selector(distributedView:menuForItemIndex:)] )
+	{
+		lastPos = [event locationInWindow];
+		lastPos = [self convertPoint:lastPos fromView:nil];
+		mouseItem = [self getItemIndexAtPoint: lastPos];
+
+		NSMenu * menu = [delegate distributedView:self menuForItemIndex: mouseItem];
+		if( menu )
+		{
+			[NSMenu popUpContextMenu:menu withEvent:event forView:self];
+		}
+	}
+}
+
 
 /* -----------------------------------------------------------------------------
 	mouseDown:

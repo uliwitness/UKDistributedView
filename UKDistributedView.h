@@ -435,6 +435,8 @@ typedef union  UKDVRuntimeFlags
 // Called on the second mouseDown of a double-click in a cell: (except if it was on the text area and the cell is editable)
 -(void) distributedView: (UKDistributedView*)distributedView cellDoubleClickedAtItemIndex: (NSUInteger)item;
 
+-(NSMenu*) distributedView: (UKDistributedView*)distributedView menuForItemIndex: (NSUInteger)item;
+
 // Selection changes: (not sent for programmatic selection changes)
 -(BOOL) distributedView: (UKDistributedView*)distributedView shouldSelectItemIndex: (NSUInteger)item;
 -(void) distributedView: (UKDistributedView*)distributedView didSelectItemIndex: (NSUInteger)item;
