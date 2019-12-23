@@ -150,10 +150,12 @@
         [coder encodeObject: image forKey: @"UKFICimage"];
         [coder encodeObject: nameColor forKey: @"UKFICnameColor"];
         [coder encodeObject: boxColor forKey: @"UKFICboxColor"];
-        [coder encodeInt: imagePosition forKey: @"UKFICimagePosition"];
+        NSAssert(imagePosition < INT_MAX && imagePosition >= 0, @"imagePosition no longer fits in coded form.");
+        [coder encodeInt: (int)imagePosition forKey: @"UKFICimagePosition"];
         [coder encodeObject: selectionColor forKey: @"UKFICselectionColor"];
         [coder encodeObject: bgColor forKey: @"UKFICbgColor"];
-        [coder encodeInt: truncateMode forKey: @"UKFICtruncateMode"];
+        NSAssert(truncateMode < INT_MAX && truncateMode >= 0, @"truncateMode no longer fits in coded form.");
+        [coder encodeInt: (int)truncateMode forKey: @"UKFICtruncateMode"];
         [coder encodeFloat: alpha forKey: @"UKFICalpha"];
     }
     else
